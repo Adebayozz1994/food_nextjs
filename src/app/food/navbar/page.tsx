@@ -1,10 +1,11 @@
-import Dashboard from '@/Components/Dashboard/page'
+
+import Navbar from '@/Components/Navbar/page'
 import React from 'react'
 
 const page = () => {
   return (
     <div>
-      <Dashboard/>
+      <Navbar/>
     </div>
   )
 }

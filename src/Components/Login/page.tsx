@@ -11,19 +11,29 @@ const Login = () => {
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+  
     try {
       const response = await axios.post('http://localhost:5000/api/login', { email, password });
+  
       if (response.data.status) {
-        // Store the token in localStorage or a global state
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        router.push('/food/dashboard'); // Redirect to dashboard
+        const { token, user } = response.data;
+  
+        // Store token and user details
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+  
+        // Check user role and redirect accordingly
+        if (user.role === 'admin') {
+          router.push('/admin');
+        } else if (user.role === 'user') {
+          router.push('/food/navbar');
+        } 
       }
     } catch {
       setError('Invalid credentials. Please try again.');
     }
   };
+  
 
   return (
     <div className="max-w-sm mx-auto mt-10">

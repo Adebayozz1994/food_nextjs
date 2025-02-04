@@ -1,17 +1,15 @@
-import React, { ReactNode } from "react";
+"use client";
 
-type LayoutProps = {
-  children: ReactNode;
-};
+import { UserProvider } from "@/Components/Usercontext/page";
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
-        {children}
+        <UserProvider>
+          {children} 
+        </UserProvider>
       </body>
     </html>
   );
-};
-
-export default Layout;
+}

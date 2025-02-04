@@ -7,6 +7,7 @@ interface User {
   firstName: string;
   lastName: string;
   email: string;
+  role: string;
   // Add other fields if necessary
 }
 
