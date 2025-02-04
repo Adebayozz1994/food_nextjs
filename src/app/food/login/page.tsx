@@ -1,10 +1,10 @@
+import Login from '@/Components/Login/page'
 import React from 'react'
-import Mainpage from "@/Components/Mainpage/page";
 
 const page = () => {
   return (
     <div>
-      <Mainpage/>
+      <Login/>
     </div>
   )
 }

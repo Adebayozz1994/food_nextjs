@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-// import "./globals.css";
+
 type LayoutProps = {
   children: ReactNode;
 };

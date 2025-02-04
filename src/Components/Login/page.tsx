@@ -17,7 +17,8 @@ const Login = () => {
       if (response.data.status) {
         // Store the token in localStorage or a global state
         localStorage.setItem('token', response.data.token);
-        router.push('/dashboard'); // Redirect to dashboard
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        router.push('/food/dashboard'); // Redirect to dashboard
       }
     } catch {
       setError('Invalid credentials. Please try again.');

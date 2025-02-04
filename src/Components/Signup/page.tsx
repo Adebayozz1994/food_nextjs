@@ -18,7 +18,7 @@ const Signup = () => {
     try {
       const response = await axios.post('http://localhost:5000/api/register', { firstName, lastName, email, password, role });
       if (response.data.status) {
-        router.push('/login'); 
+        router.push('/food/login'); 
       }
     } catch {
       setError('Registration failed. Please try again.');
