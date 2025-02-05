@@ -1,4 +1,3 @@
-// pages/food/products.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -16,6 +15,8 @@ interface Product {
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [cartMessage, setCartMessage] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     axios
@@ -28,6 +29,41 @@ export default function Products() {
         setError('Failed to load products');
       });
   }, []);
+
+  // Function to handle "Add to Cart"
+  const handleAddToCart = async (productId: string) => {
+    setLoading(true);
+    try {
+      const { data } = await axios.post(
+        'http://localhost:5000/api/cart/add',
+        { productId, quantity: 1 },
+        { withCredentials: true }
+      );
+  
+      console.log('Cart Response:', data); // Logging response for debugging
+  
+      setCartMessage((prev) => ({
+        ...prev,
+        [productId]: data.message || 'Added to cart!', // Using response message if available
+      }));
+  
+      setTimeout(() => {
+        setCartMessage((prev) => ({
+          ...prev,
+          [productId]: '',
+        }));
+      }, 3000);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      setCartMessage((prev) => ({
+        ...prev,
+        [productId]: 'Failed to add to cart',
+      }));
+    } finally {
+      setLoading(false);
+    }
+  };
+  
 
   return (
     <div>
@@ -45,11 +81,22 @@ export default function Products() {
                 />
               )}
               <h2 className="text-xl font-bold">{product.name}</h2>
-              <p className="mt-2">${product.price}</p>
-              {product.description && (
-                <p className="mt-2">{product.description}</p>
+              <p className="mt-2 text-gray-700">${product.price}</p>
+              {product.description && <p className="mt-2">{product.description}</p>}
+
+              {/* Add to Cart Button */}
+              <button
+                onClick={() => handleAddToCart(product._id)}
+                disabled={loading}
+                className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300 disabled:bg-gray-400"
+              >
+                {loading ? 'Adding...' : 'Add to Cart'}
+              </button>
+
+              {/* Feedback message */}
+              {cartMessage[product._id] && (
+                <p className="text-sm text-green-600 mt-2">{cartMessage[product._id]}</p>
               )}
-              {/* Optionally, you can add an "Add to Cart" button here */}
             </div>
           ))}
         </div>
