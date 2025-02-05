@@ -1,26 +1,24 @@
-"use client";
-
+'use client';
 import React, { createContext, useState, useContext, useEffect, ReactNode } from "react";
 
-// Define User type
+// Define the User type
 interface User {
   firstName: string;
   lastName: string;
   email: string;
   role: string;
-  // Add other fields if necessary
 }
 
-// Define UserContext type
+// Define the context type
 interface UserContextType {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
-// Create Context
+// Create the context
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-// Custom Hook
+// Custom hook to access the user context
 export const useUser = (): UserContextType => {
   const context = useContext(UserContext);
   if (!context) {
@@ -29,21 +27,21 @@ export const useUser = (): UserContextType => {
   return context;
 };
 
-// Provider Component
+// Provider component
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
-  // Load user data from localStorage on mount (client-side only)
+  // Load user from localStorage when component mounts
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const userFromStorage = localStorage.getItem("user");
-      if (userFromStorage) {
-        setUser(JSON.parse(userFromStorage));
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
       }
     }
   }, []);
 
-  // Save user to localStorage when updated
+  // Save or remove user from localStorage when user state changes
   useEffect(() => {
     if (typeof window !== "undefined") {
       if (user) {
@@ -54,9 +52,5 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [user]);
 
-  return (
-    <UserContext.Provider value={{ user, setUser }}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>;
 };

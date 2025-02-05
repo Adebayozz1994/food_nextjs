@@ -3,12 +3,11 @@ import { useEffect, useState } from 'react';
 import { useUser } from '@/Components/Usercontext/page';
 import Link from 'next/link';
 
-const Navbar = () => {
+const AdminNavbar = () => {
   const { user, setUser } = useUser();
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // Check localStorage for stored user details
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
@@ -34,9 +33,9 @@ const Navbar = () => {
           <Link href="/contact" className="text-white">
             Contact
           </Link>
-          {user ? (
+          {user && user.role === 'admin' ? (
             <div className="text-white">
-              <span>Welcome, {user.firstName}!</span>
+              <span>Welcome, {user.firstName} (Admin)!</span>
             </div>
           ) : (
             <Link href="/food/login" className="text-white">
@@ -49,4 +48,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default AdminNavbar;
