@@ -34,19 +34,34 @@ export default function Products() {
   const handleAddToCart = async (productId: string) => {
     setLoading(true);
     try {
+      // Get token from localStorage
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error("No token found. Please log in first.");
+        setCartMessage((prev) => ({
+          ...prev,
+          [productId]: 'User not authenticated',
+        }));
+        setLoading(false);
+        return;
+      }
+
       const { data } = await axios.post(
         'http://localhost:5000/api/cart/add',
         { productId, quantity: 1 },
-        { withCredentials: true }
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        }
       );
-  
+
       console.log('Cart Response:', data); // Logging response for debugging
-  
+
       setCartMessage((prev) => ({
         ...prev,
-        [productId]: data.message || 'Added to cart!', // Using response message if available
+        [productId]: data.message || 'Added to cart!',
       }));
-  
+
       setTimeout(() => {
         setCartMessage((prev) => ({
           ...prev,
@@ -63,7 +78,6 @@ export default function Products() {
       setLoading(false);
     }
   };
-  
 
   return (
     <div>
