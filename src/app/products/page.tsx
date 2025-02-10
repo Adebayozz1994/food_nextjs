@@ -55,7 +55,7 @@ export default function Products() {
         }
       );
 
-      console.log('Cart Response:', data); // Logging response for debugging
+      console.log('Cart Response:', data);
 
       setCartMessage((prev) => ({
         ...prev,

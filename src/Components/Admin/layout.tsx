@@ -1,15 +1,17 @@
-"use client";
+import React, { ReactNode } from "react";
 
-import { UserProvider } from "@/Components/Usercontext/page";
+type LayoutProps = {
+  children: ReactNode;
+};
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <html lang="en">
       <body>
-        <UserProvider>
-          {children} 
-        </UserProvider>
+        {children}
       </body>
     </html>
   );
-}
+};
+
+export default Layout;
