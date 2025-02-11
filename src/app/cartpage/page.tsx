@@ -1,6 +1,6 @@
-// app/cart/page.tsx
 'use client';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
 interface CartItem {
@@ -15,6 +15,7 @@ interface CartItem {
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     fetchCart();
@@ -24,9 +25,7 @@ export default function CartPage() {
     try {
       const token = localStorage.getItem('token');
       const { data } = await axios.get('http://localhost:5000/api/cart', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
       });
       setCartItems(data.items);
@@ -42,10 +41,7 @@ export default function CartPage() {
       await axios.put(
         'http://localhost:5000/api/cart/update',
         { productId, quantity },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
-        }
+        { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
       );
       fetchCart();
     } catch (error) {
@@ -66,7 +62,10 @@ export default function CartPage() {
     }
   };
 
-  // Calculate total price
+  const handleCheckout = () => {
+    router.push('/carts');
+  };
+
   const totalPrice = cartItems.reduce(
     (total, item) => total + item.product.price * item.quantity,
     0
@@ -96,11 +95,17 @@ export default function CartPage() {
               </button>
             </div>
           ))}
-          {/* Total Price Section */}
           <div className="mt-6 flex justify-between items-center border-t pt-4">
             <h3 className="text-xl font-semibold">Total:</h3>
             <p className="text-xl font-bold">${totalPrice.toFixed(2)}</p>
           </div>
+          {/* Checkout Button */}
+          <button
+            onClick={handleCheckout}
+            className="mt-6 w-full bg-blue-500 text-white py-3 text-lg font-semibold rounded hover:bg-blue-600 transition"
+          >
+            Proceed to Checkout
+          </button>
         </>
       )}
     </div>
