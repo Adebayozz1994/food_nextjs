@@ -4,13 +4,15 @@ import React, { useState, FormEvent } from 'react';
 import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { useRouter } from 'next/navigation'; 
 
-const stripePromise = loadStripe('pk_test_51QrGLQGu8lA2diLS1Lv1EUKugcYcw2e6hLxlS5cCQm0iHl2gYLOnokTUVEEDKLz69oJoJLwffXoCybK4IYJCIKDb00ePKnVval'); // Replace with your Stripe publishable key
+const stripePromise = loadStripe('pk_test_51QrGLQGu8lA2diLS1Lv1EUKugcYcw2e6hLxlS5cCQm0iHl2gYLOnokTUVEEDKLz69oJoJLwffXoCybK4IYJCIKDb00ePKnVval'); 
 
 interface CheckoutResponse {
   message: string;
   clientSecret?: string;
   whatsappLink?: string;
+  orderId?: string;  // Add orderId in the response
 }
 
 const CheckoutForm = () => {
@@ -21,6 +23,7 @@ const CheckoutForm = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string>('card');
+  const router = useRouter();  // Initialize router
 
   const handleCheckout = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,6 +44,9 @@ const CheckoutForm = () => {
         setWhatsappLink(data.whatsappLink);
       } else {
         setMessage('Order placed successfully!');
+        if (data.orderId) {
+          router.push(`/order-success/${data.orderId}`);  // Redirect to the order success page
+        }
       }
     } catch (error) {
       console.error('Checkout error:', error);
@@ -63,6 +69,7 @@ const CheckoutForm = () => {
       setMessage(error.message || 'Payment failed');
     } else if (paymentIntent?.status === 'succeeded') {
       setMessage('Payment successful!');
+      router.push(`/order-success/${paymentIntent.id}`);  // Redirect to success page
     }
   };
 
