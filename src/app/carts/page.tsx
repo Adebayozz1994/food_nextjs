@@ -1,18 +1,18 @@
-'use client';
-
-import React, { useState, FormEvent } from 'react';
+'use client'
+import React, { useState, FormEvent, useEffect } from 'react';
 import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { useRouter } from 'next/navigation'; 
+// import { useRouter } from 'next/navigation';
 
-const stripePromise = loadStripe('pk_test_51QrGLQGu8lA2diLS1Lv1EUKugcYcw2e6hLxlS5cCQm0iHl2gYLOnokTUVEEDKLz69oJoJLwffXoCybK4IYJCIKDb00ePKnVval'); 
+const stripePromise = loadStripe('pk_test_51QrGLQGu8lA2diLS1Lv1EUKugcYcw2e6hLxlS5cCQm0iHl2gYLOnokTUVEEDKLz69oJoJLwffXoCybK4IYJCIKDb00ePKnVval');
 
 interface CheckoutResponse {
   message: string;
   clientSecret?: string;
   whatsappLink?: string;
-  orderId?: string;  // Add orderId in the response
+  orderId?: string;
+  products?: Array<{ name: string, price: number, quantity: number }>;
 }
 
 const CheckoutForm = () => {
@@ -23,7 +23,7 @@ const CheckoutForm = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string>('card');
-  const router = useRouter();  // Initialize router
+  const [products, setProducts] = useState<{ name: string, price: number, quantity: number }[]>([]);
 
   const handleCheckout = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,21 +32,25 @@ const CheckoutForm = () => {
 
     const token = localStorage.getItem('token');
     try {
-      const { data } = await axios.post<CheckoutResponse>(
+      const { data, headers } = await axios.post<CheckoutResponse>(
         'http://localhost:5000/api/order/checkout',
         { paymentMethod },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      if (paymentMethod === 'card') {
-        setClientSecret(data.clientSecret || null);
-      } else if (paymentMethod === 'whatsapp' && data.whatsappLink) {
-        setWhatsappLink(data.whatsappLink);
-      } else {
-        setMessage('Order placed successfully!');
-        if (data.orderId) {
-          router.push(`/order-success/${data.orderId}`);  // Redirect to the order success page
+      console.log('Checkout response data:', data);
+
+      if (headers['content-type']?.includes('application/json')) {
+        if (paymentMethod === 'card') {
+          setClientSecret(data.clientSecret || null);
+          setProducts(data.products || []);
+        } else if (paymentMethod === 'whatsapp' && data.whatsappLink) {
+          setWhatsappLink(data.whatsappLink);
+        } else {
+          setMessage('Order placed successfully!');
         }
+      } else {
+        throw new Error('Expected JSON, but received HTML.');
       }
     } catch (error) {
       console.error('Checkout error:', error);
@@ -69,9 +73,16 @@ const CheckoutForm = () => {
       setMessage(error.message || 'Payment failed');
     } else if (paymentIntent?.status === 'succeeded') {
       setMessage('Payment successful!');
-      router.push(`/order-success/${paymentIntent.id}`);  // Redirect to success page
+      setProducts([]); 
+      // No navigation after payment, the message and products are displayed below
     }
   };
+
+  useEffect(() => {
+    if (message && message.includes('successful')) {
+      setMessage('Payment successful!');
+    }
+  }, [message]);
 
   return (
     <div className="container mx-auto p-6">
@@ -111,6 +122,22 @@ const CheckoutForm = () => {
           >
             Pay Now
           </button>
+        </div>
+      )}
+      {message && message.includes('successful') && (
+        <div className="mt-6">
+          <h2 className="text-xl font-semibold">Your Purchase Was Successful!</h2>
+          <p>Thank you for your order. Your payment has been processed successfully.</p>
+          <h3 className="mt-4 font-semibold">Your Purchased Products:</h3>
+          <ul>
+            {products.map((product, index) => (
+              <li key={index} className="mb-4">
+                <span>{product.name}</span> - 
+                <span>${product.price}</span> x 
+                <span>{product.quantity}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
