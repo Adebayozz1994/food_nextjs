@@ -14,6 +14,13 @@ interface CheckoutResponse {
   orderId?: string;
 }
 
+interface DeliveryAddress {
+  street: string;
+  city: string;
+  state: string;
+  phoneNumber: string;
+}
+
 const CheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
@@ -24,17 +31,36 @@ const CheckoutForm = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string>('card');
+  const [deliveryAddress, setDeliveryAddress] = useState<DeliveryAddress>({
+    street: '',
+    city: '',
+    state: '',
+    phoneNumber: '',
+  });
 
   const handleCheckout = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setMessage(null);
 
+    // Validate delivery address for COD
+    if (paymentMethod === 'cod') {
+      if (!deliveryAddress.street || !deliveryAddress.city || 
+          !deliveryAddress.state || !deliveryAddress.phoneNumber) {
+        setMessage('Please fill in all delivery address fields for Cash on Delivery');
+        setLoading(false);
+        return;
+      }
+    }
+
     const token = localStorage.getItem('token');
     try {
       const { data, headers } = await axios.post<CheckoutResponse>(
         'http://localhost:5000/api/order/checkout',
-        { paymentMethod },
+        { 
+          paymentMethod,
+          ...(paymentMethod === 'cod' && { deliveryAddress })
+        },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -42,7 +68,6 @@ const CheckoutForm = () => {
         if (paymentMethod === 'card') {
           setClientSecret(data.clientSecret || null);
         } else if (paymentMethod === 'whatsapp' && data.whatsappLink) {
-          // For WhatsApp or COD, redirect directly after order placement.
           router.push(`/order-success?orderId=${data.orderId}`);
         } else {
           setMessage('Order placed successfully!');
@@ -125,6 +150,70 @@ const CheckoutForm = () => {
           <option value="whatsapp">Order via WhatsApp</option>
           <option value="cod">Cash on Delivery</option>
         </select>
+
+        {paymentMethod === 'cod' && (
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold mb-3">Delivery Address</h3>
+            <div className="space-y-3">
+              <div>
+                <label className="block mb-1">Street Address</label>
+                <input
+                  type="text"
+                  className="border p-2 w-full rounded"
+                  value={deliveryAddress.street}
+                  onChange={(e) => setDeliveryAddress(prev => ({
+                    ...prev,
+                    street: e.target.value
+                  }))}
+                  placeholder="Enter your street address"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block mb-1">City</label>
+                <input
+                  type="text"
+                  className="border p-2 w-full rounded"
+                  value={deliveryAddress.city}
+                  onChange={(e) => setDeliveryAddress(prev => ({
+                    ...prev,
+                    city: e.target.value
+                  }))}
+                  placeholder="Enter your city"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block mb-1">State</label>
+                <input
+                  type="text"
+                  className="border p-2 w-full rounded"
+                  value={deliveryAddress.state}
+                  onChange={(e) => setDeliveryAddress(prev => ({
+                    ...prev,
+                    state: e.target.value
+                  }))}
+                  placeholder="Enter your state"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block mb-1">Phone Number</label>
+                <input
+                  type="tel"
+                  className="border p-2 w-full rounded"
+                  value={deliveryAddress.phoneNumber}
+                  onChange={(e) => setDeliveryAddress(prev => ({
+                    ...prev,
+                    phoneNumber: e.target.value
+                  }))}
+                  placeholder="Enter your phone number"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        )}
 
         <button
           type="submit"

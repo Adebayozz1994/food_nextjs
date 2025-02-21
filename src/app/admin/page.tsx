@@ -13,6 +13,7 @@ export default function Dashboard() {
         <div className="flex space-x-4">
           <Link href="/admin/products" className="bg-blue-500 text-white py-2 px-4 rounded">Manage Products</Link>
           <Link href="/admin/users" className="bg-green-500 text-white py-2 px-4 rounded">Manage Users</Link>
+          <Link href="/admin/allOrder" className="bg-green-500 text-white py-2 px-4 rounded">Manage Allorders</Link>
         </div>
       </div>
     </div>
