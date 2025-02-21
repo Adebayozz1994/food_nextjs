@@ -43,7 +43,7 @@ const CheckoutForm = () => {
     setLoading(true);
     setMessage(null);
 
-    // Validate delivery address for COD
+    // Validate delivery address for Cash on Delivery (COD)
     if (paymentMethod === 'cod') {
       if (!deliveryAddress.street || !deliveryAddress.city || 
           !deliveryAddress.state || !deliveryAddress.phoneNumber) {
@@ -68,7 +68,8 @@ const CheckoutForm = () => {
         if (paymentMethod === 'card') {
           setClientSecret(data.clientSecret || null);
         } else if (paymentMethod === 'whatsapp' && data.whatsappLink) {
-          router.push(`/order-success?orderId=${data.orderId}`);
+          // Instead of redirecting immediately, update the state so the link is displayed
+          setWhatsappLink(data.whatsappLink);
         } else {
           setMessage('Order placed successfully!');
           router.push(`/order-success?orderId=${data.orderId}`);
@@ -100,7 +101,7 @@ const CheckoutForm = () => {
       } else if (paymentIntent?.status === 'succeeded') {
         try {
           const token = localStorage.getItem('token');
-          // Use your payment intent ID to fetch the order details
+          // Fetch order details using the payment intent ID
           const response = await axios.get(
             `http://localhost:5000/api/order/payment-intent/${paymentIntent.id}`,
             { headers: { Authorization: `Bearer ${token}` } }
@@ -141,7 +142,7 @@ const CheckoutForm = () => {
 
       <form onSubmit={handleCheckout}>
         <label className="block mb-2">Select Payment Method:</label>
-        <select
+        <select 
           className="border p-2 mb-4 w-full rounded"
           value={paymentMethod}
           onChange={(e) => setPaymentMethod(e.target.value)}
@@ -157,7 +158,7 @@ const CheckoutForm = () => {
             <div className="space-y-3">
               <div>
                 <label className="block mb-1">Street Address</label>
-                <input
+                <input 
                   type="text"
                   className="border p-2 w-full rounded"
                   value={deliveryAddress.street}
@@ -171,7 +172,7 @@ const CheckoutForm = () => {
               </div>
               <div>
                 <label className="block mb-1">City</label>
-                <input
+                <input 
                   type="text"
                   className="border p-2 w-full rounded"
                   value={deliveryAddress.city}
@@ -185,7 +186,7 @@ const CheckoutForm = () => {
               </div>
               <div>
                 <label className="block mb-1">State</label>
-                <input
+                <input 
                   type="text"
                   className="border p-2 w-full rounded"
                   value={deliveryAddress.state}
@@ -199,7 +200,7 @@ const CheckoutForm = () => {
               </div>
               <div>
                 <label className="block mb-1">Phone Number</label>
-                <input
+                <input 
                   type="tel"
                   className="border p-2 w-full rounded"
                   value={deliveryAddress.phoneNumber}
@@ -215,7 +216,7 @@ const CheckoutForm = () => {
           </div>
         )}
 
-        <button
+        <button 
           type="submit"
           className="bg-blue-500 text-white px-4 py-2 rounded w-full hover:bg-blue-600 disabled:bg-blue-300"
           disabled={loading}
@@ -228,21 +229,19 @@ const CheckoutForm = () => {
         <div className="mt-6">
           <h2 className="text-xl font-semibold mb-4">Enter Card Details:</h2>
           <div className="border p-4 rounded bg-white mb-4">
-            <CardElement
-              options={{
-                style: {
-                  base: {
-                    fontSize: '16px',
-                    color: '#424770',
-                    '::placeholder': {
-                      color: '#aab7c4',
-                    },
+            <CardElement options={{
+              style: {
+                base: {
+                  fontSize: '16px',
+                  color: '#424770',
+                  '::placeholder': {
+                    color: '#aab7c4',
                   },
                 },
-              }}
-            />
+              },
+            }} />
           </div>
-          <button
+          <button 
             className="bg-green-500 text-white px-4 py-2 rounded w-full hover:bg-green-600 disabled:bg-green-300"
             onClick={handlePayment}
             disabled={loading}
