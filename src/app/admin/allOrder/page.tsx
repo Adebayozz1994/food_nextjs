@@ -92,7 +92,7 @@ export default function AllOrders() {
     }
   };
 
-  const updateOrderStatus = async (orderId: string, newStatus: string) => {
+  const updateOrderStatus = async (orderId: string, orderStatus: string, paymentStatus: string) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -102,7 +102,7 @@ export default function AllOrders() {
 
       await axios.patch(
         `http://localhost:5000/api/admin/orders/${orderId}`,
-        { orderStatus: newStatus },
+        { orderStatus, paymentStatus },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -114,8 +114,8 @@ export default function AllOrders() {
       // Refresh orders after update
       fetchOrders();
     } catch (error) {
-      console.error('Error updating order status:', error);
-      setError('Failed to update order status');
+      console.error('Error updating order:', error);
+      setError('Failed to update order');
     }
   };
 
@@ -197,19 +197,38 @@ export default function AllOrders() {
 
               <div className="flex items-center justify-between mt-4 pt-4 border-t">
                 <div className="flex items-center space-x-4">
-                  <span className="font-semibold">Status:</span>
-                  <select
-                    value={order.orderStatus}
-                    onChange={(e) => updateOrderStatus(order._id, e.target.value)}
-                    className="border rounded p-2"
-                  >
-                    <option value="Pending">Pending</option>
-                    <option value="Processing">Processing</option>
-                    <option value="Shipped">Shipped</option>
-                    <option value="Delivered">Delivered</option>
-                    <option value="Cancelled">Cancelled</option>
-                  </select>
+                  <div>
+                    <span className="font-semibold mr-2">Order Status:</span>
+                    <select
+                      value={order.orderStatus}
+                      onChange={(e) => updateOrderStatus(order._id, e.target.value, order.paymentStatus)}
+                      className="border rounded p-2"
+                    >
+                      <option value="Pending">Pending</option>
+                      <option value="Processing">Processing</option>
+                      <option value="Shipped">Shipped</option>
+                      <option value="Delivered">Delivered</option>
+                      <option value="Cancelled">Cancelled</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <span className="font-semibold mr-2">Payment Status:</span>
+                    <select
+                      value={order.paymentStatus}
+                      onChange={(e) => updateOrderStatus(order._id, order.orderStatus, e.target.value)}
+                      className="border rounded p-2"
+                    >
+                      <option value="Pending">Pending</option>
+                      <option value="Paid">Paid</option>
+                      <option value="Failed">Failed</option>
+                      <option value="Refunded">Refunded</option>
+                    </select>
+                  </div>
                 </div>
+              </div>
+
+              <div className="mt-4 flex justify-between items-center">
                 <span className={`px-3 py-1 rounded-full text-sm ${
                   order.orderStatus === 'Delivered' ? 'bg-green-100 text-green-800' :
                   order.orderStatus === 'Cancelled' ? 'bg-red-100 text-red-800' :
@@ -217,13 +236,21 @@ export default function AllOrders() {
                   order.orderStatus === 'Processing' ? 'bg-yellow-100 text-yellow-800' :
                   'bg-gray-100 text-gray-800'
                 }`}>
-                  {order.orderStatus}
+                  Order: {order.orderStatus}
+                </span>
+
+                <span className={`px-3 py-1 rounded-full text-sm ${
+                  order.paymentStatus === 'Paid' ? 'bg-green-100 text-green-800' :
+                  order.paymentStatus === 'Failed' ? 'bg-red-100 text-red-800' :
+                  order.paymentStatus === 'Refunded' ? 'bg-purple-100 text-purple-800' :
+                  'bg-yellow-100 text-yellow-800'
+                }`}>
+                  Payment: {order.paymentStatus}
                 </span>
               </div>
 
               <div className="mt-4 text-sm text-gray-600">
                 <p>Payment Method: {order.paymentMethod}</p>
-                <p>Payment Status: {order.paymentStatus}</p>
               </div>
             </div>
           ))
