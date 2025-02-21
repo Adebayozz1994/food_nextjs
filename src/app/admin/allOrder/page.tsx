@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
 
 interface Product {
   _id: string;
@@ -100,22 +101,24 @@ export default function AllOrders() {
         return;
       }
 
-      await axios.patch(
+      const response = await axios.patch(
         `http://localhost:5000/api/admin/orders/${orderId}`,
-        { orderStatus, paymentStatus },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
+          orderStatus,
+          paymentStatus
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }
         }
       );
 
-      // Refresh orders after update
-      fetchOrders();
+      if (response.data.success) {
+        toast.success('Order updated successfully');
+        fetchOrders(); // Refresh the orders list
+      }
     } catch (error) {
       console.error('Error updating order:', error);
-      setError('Failed to update order');
+      toast.error('Failed to update order');
     }
   };
 
