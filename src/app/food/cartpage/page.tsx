@@ -63,7 +63,18 @@ export default function CartPage() {
   };
 
   const handleCheckout = () => {
-    router.push('/carts');
+    router.push('/food/carts');
+  };
+
+  const handleOrderSuccess = () => {
+    // Clear local storage cart data
+    localStorage.removeItem('cart');
+    
+    // Dispatch custom event
+    window.dispatchEvent(new Event('orderCompleted'));
+    
+    // Navigate to success page
+    router.push('/food/order-success');
   };
 
   const totalPrice = cartItems.reduce(

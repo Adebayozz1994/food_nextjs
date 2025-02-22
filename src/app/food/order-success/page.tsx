@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
-import { FaCheckCircle, FaTruck, FaMapMarkerAlt, FaReceipt } from 'react-icons/fa';
+import { FaCheckCircle, FaTruck, FaMapMarkerAlt, FaReceipt, FaShoppingBag } from 'react-icons/fa';
+import Link from 'next/link';
 
 interface OrderProduct {
   _id: string;
@@ -87,7 +88,16 @@ export default function OrderSuccessPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto p-6 relative">
+      {/* Continue Shopping Button */}
+      <Link 
+        href="/food/products" 
+        className="fixed top-4 right-4 z-50 flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md"
+      >
+        <FaShoppingBag className="text-lg" />
+        <span>Continue Shopping</span>
+      </Link>
+
       <div className="text-center mb-8">
         <FaCheckCircle className="text-green-500 text-6xl mx-auto mb-4" />
         <h1 className="text-3xl font-bold text-gray-800">Order Successful!</h1>

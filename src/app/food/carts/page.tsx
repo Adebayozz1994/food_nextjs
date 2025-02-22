@@ -72,7 +72,7 @@ const CheckoutForm = () => {
           setWhatsappLink(data.whatsappLink);
         } else {
           setMessage('Order placed successfully!');
-          router.push(`/order-success?orderId=${data.orderId}`);
+          router.push(`/food/order-success?orderId=${data.orderId}`);
         }
       } else {
         throw new Error('Expected JSON, but received HTML.');
@@ -107,7 +107,7 @@ const CheckoutForm = () => {
             { headers: { Authorization: `Bearer ${token}` } }
           );
           // Redirect to the order success page using the orderId from the response
-          router.push(`/order-success?orderId=${response.data.orderId}`);
+          router.push(`/food/order-success?orderId=${response.data.orderId}`);
         } catch (error) {
           console.error('Error fetching order details:', error);
           setMessage('Payment successful, but failed to load order details.');
