@@ -1,19 +1,23 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { toast } from 'react-hot-toast';
+
+interface OrderProduct {
+  name: string;
+  price: number;
+  image: string;
+}
+
+interface OrderItem {
+  product: OrderProduct;
+  quantity: number;
+}
 
 interface Order {
   _id: string;
-  items: {
-    product: {
-      name: string;
-      price: number;
-      image: string;
-    };
-    quantity: number;
-  }[];
+  items: OrderItem[];
   total: number;
   orderStatus: string;
   paymentStatus: string;
@@ -27,28 +31,45 @@ interface User {
   firstName: string;
   lastName: string;
   email: string;
+  role: string;
 }
+
+interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
+
+interface UserResponse {
+  user: User;
+}
+
+interface OrdersResponse {
+  orders: Order[];
+}
+
+type ApiError = AxiosError<{ success: boolean; message: string }>;
 
 export default function Profile() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [activeTab, setActiveTab] = useState('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'security'>('profile');
 
   // Form states
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
+  const [currentPassword, setCurrentPassword] = useState<string>('');
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
 
   useEffect(() => {
     fetchUserProfile();
     fetchUserOrders();
   }, []);
 
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = async (): Promise<void> => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -56,9 +77,12 @@ export default function Profile() {
         return;
       }
 
-      const response = await axios.get('http://localhost:5000/api/user/profile', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response: AxiosResponse<ApiResponse<UserResponse>> = await axios.get(
+        'http://localhost:5000/api/user/profile',
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
 
       if (response.data.success) {
         setUser(response.data.data.user);
@@ -66,38 +90,49 @@ export default function Profile() {
         setLastName(response.data.data.user.lastName);
       }
       setLoading(false);
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-      toast.error('Failed to fetch profile');
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const err = error as ApiError;
+        toast.error(err.response?.data?.message || 'Failed to fetch profile');
+      } else {
+        toast.error('An unexpected error occurred');
+      }
       setLoading(false);
     }
   };
 
-  const fetchUserOrders = async () => {
+  const fetchUserOrders = async (): Promise<void> => {
     try {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await axios.get('http://localhost:5000/api/user/orders', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response: AxiosResponse<ApiResponse<OrdersResponse>> = await axios.get(
+        'http://localhost:5000/api/user/orders',
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
 
       if (response.data.success) {
         setOrders(response.data.data.orders);
       }
-    } catch (error) {
-      console.error('Error fetching orders:', error);
-      toast.error('Failed to fetch orders');
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const err = error as ApiError;
+        toast.error(err.response?.data?.message || 'Failed to fetch orders');
+      } else {
+        toast.error('An unexpected error occurred');
+      }
     }
   };
 
-  const handleUpdateProfile = async (e: React.FormEvent) => {
+  const handleUpdateProfile = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await axios.put(
+      const response: AxiosResponse<ApiResponse<UserResponse>> = await axios.put(
         'http://localhost:5000/api/user/update-profile',
         { firstName, lastName },
         { headers: { Authorization: `Bearer ${token}` } }
@@ -107,16 +142,19 @@ export default function Profile() {
         toast.success('Profile updated successfully');
         fetchUserProfile();
       }
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      toast.error('Failed to update profile');
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const err = error as ApiError;
+        toast.error(err.response?.data?.message || 'Failed to update profile');
+      } else {
+        toast.error('An unexpected error occurred');
+      }
     }
   };
 
-  const handleUpdatePassword = async (e: React.FormEvent) => {
+  const handleUpdatePassword = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     
-    // Validate passwords
     if (newPassword !== confirmPassword) {
       toast.error('New passwords do not match');
       return;
@@ -134,7 +172,7 @@ export default function Profile() {
         return;
       }
 
-      const response = await axios.put(
+      const response: AxiosResponse<ApiResponse<null>> = await axios.put(
         'http://localhost:5000/api/user/update-password',
         {
           currentPassword,
@@ -150,21 +188,21 @@ export default function Profile() {
 
       if (response.data.success) {
         toast.success('Password updated successfully');
-        // Clear password fields
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
-        
-        // Optional: Log out user after password change
-        // handleLogout();
       }
-    } catch (error: any) {
-      console.error('Error updating password:', error);
-      toast.error(error.response?.data?.message || 'Failed to update password');
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const err = error as ApiError;
+        toast.error(err.response?.data?.message || 'Failed to update password');
+      } else {
+        toast.error('An unexpected error occurred');
+      }
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = (): void => {
     localStorage.removeItem('token');
     router.push('/food/login');
   };
@@ -243,45 +281,80 @@ export default function Profile() {
 
             {activeTab === 'orders' && (
               <div className="space-y-4">
-                {orders.map((order) => (
-                  <div key={order._id} className="border rounded-lg p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <p className="font-semibold">Order ID: {order._id}</p>
-                        <p className="text-sm text-gray-600">
-                          Date: {new Date(order.createdAt).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold">Total: ${order.total.toFixed(2)}</p>
-                        <p className="text-sm">Tracking ID: {order.trackingId}</p>
-                      </div>
-                    </div>
-                    <div className="mt-2">
-                      {order.items.map((item, index) => (
-                        <div key={index} className="flex justify-between text-sm">
-                          <span>{item.product.name} x {item.quantity}</span>
-                          <span>${(item.product.price * item.quantity).toFixed(2)}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="mt-4 flex justify-between">
-                      <span className={`px-3 py-1 rounded-full text-sm ${
-                        order.orderStatus === 'Delivered' ? 'bg-green-100 text-green-800' :
-                        order.orderStatus === 'Cancelled' ? 'bg-red-100 text-red-800' :
-                        'bg-blue-100 text-blue-800'
-                      }`}>
-                        {order.orderStatus}
-                      </span>
-                      <span className={`px-3 py-1 rounded-full text-sm ${
-                        order.paymentStatus === 'Paid' ? 'bg-green-100 text-green-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
-                        {order.paymentStatus}
-                      </span>
-                    </div>
+                {orders.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    No orders found
                   </div>
-                ))}
+                ) : (
+                  orders.map((order) => (
+                    <div key={order._id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                      <div className="flex justify-between items-start mb-4">
+                        <div>
+                          <p className="font-semibold text-gray-800">Order ID: {order._id}</p>
+                          <p className="text-sm text-gray-600">
+                            Date: {new Date(order.createdAt).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </p>
+                          <p className="text-sm text-gray-600">Tracking ID: {order.trackingId}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-bold text-lg text-gray-800">
+                            Total: ${order.total.toFixed(2)}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            Payment Method: {order.paymentMethod}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        {order.items.map((item, index) => (
+                          <div key={index} className="flex items-center justify-between py-2 border-t">
+                            <div className="flex items-center space-x-4">
+                              {item.product.image && (
+                                <img
+                                  src={item.product.image}
+                                  alt={item.product.name}
+                                  className="w-16 h-16 object-cover rounded"
+                                />
+                              )}
+                              <div>
+                                <p className="font-medium text-gray-800">{item.product.name}</p>
+                                <p className="text-sm text-gray-600">
+                                  Quantity: {item.quantity} × ${item.product.price.toFixed(2)}
+                                </p>
+                              </div>
+                            </div>
+                            <p className="font-medium text-gray-800">
+                              ${(item.quantity * item.product.price).toFixed(2)}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="mt-4 flex justify-between items-center pt-4 border-t">
+                        <span className={`px-4 py-2 rounded-full text-sm font-medium ${
+                          order.orderStatus === 'Delivered' ? 'bg-green-100 text-green-800' :
+                          order.orderStatus === 'Cancelled' ? 'bg-red-100 text-red-800' :
+                          'bg-blue-100 text-blue-800'
+                        }`}>
+                          Order Status: {order.orderStatus}
+                        </span>
+                        <span className={`px-4 py-2 rounded-full text-sm font-medium ${
+                          order.paymentStatus === 'Paid' ? 'bg-green-100 text-green-800' :
+                          'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          Payment Status: {order.paymentStatus}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             )}
 
