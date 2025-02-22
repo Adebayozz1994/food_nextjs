@@ -115,36 +115,58 @@ export default function Profile() {
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate passwords
     if (newPassword !== confirmPassword) {
-      toast.error('Passwords do not match');
+      toast.error('New passwords do not match');
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      toast.error('Password must be at least 6 characters long');
       return;
     }
 
     try {
       const token = localStorage.getItem('token');
-      if (!token) return;
+      if (!token) {
+        router.push('/login');
+        return;
+      }
 
       const response = await axios.put(
         'http://localhost:5000/api/user/update-password',
-        { currentPassword, newPassword },
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          currentPassword,
+          newPassword
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
       );
 
       if (response.data.success) {
         toast.success('Password updated successfully');
+        // Clear password fields
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
+        
+        // Optional: Log out user after password change
+        // handleLogout();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating password:', error);
-      toast.error('Failed to update password');
+      toast.error(error.response?.data?.message || 'Failed to update password');
     }
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    router.push('/login');
+    router.push('/food/login');
   };
 
   if (loading) {
