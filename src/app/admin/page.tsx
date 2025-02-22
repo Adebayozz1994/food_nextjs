@@ -1,7 +1,7 @@
 // pages/admin/dashboard.js
 'use client';
 import React from 'react';
-import Adminnavbar from '@/Components/Adminnavbar/page';
+import Adminnavbar from '@/Components/Admin/Adminnavbar/page';
 import Link from 'next/link';
 
 export default function Dashboard() {
