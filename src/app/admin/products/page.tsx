@@ -7,10 +7,14 @@ import axios from 'axios';
 interface Product {
   _id: string;
   name: string;
-  description?: string;
+  description: string;
   price: number;
-  imageUrl?: string;
+  imageUrl: string;
+  category: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snacks' | 'Beverages' | 'Desserts';
+  isAvailable: boolean;
 }
+
+const CATEGORIES = ['Breakfast', 'Lunch', 'Dinner', 'Snacks', 'Beverages', 'Desserts'] as const;
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -19,23 +23,34 @@ export default function AdminProducts() {
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [category, setCategory] = useState<Product['category']>('Breakfast');
   const [isLoading, setIsLoading] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null); // Track product being edited
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
   
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
-  useEffect(() => {
+  // Fetch products with optional category filter
+  const fetchProducts = async () => {
     if (!token) return;
-    axios
-      .get<Product[]>('http://localhost:5000/api/admin/products', {
+    try {
+      const url = selectedCategory
+        ? `http://localhost:5000/api/admin/products/category/${selectedCategory}`
+        : 'http://localhost:5000/api/admin/products';
+      
+      const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => setProducts(res.data))
-      .catch((err) => {
-        console.error(err);
-        setError('Failed to load products');
       });
-  }, [token]);
+      setProducts(response.data.products || response.data);
+    } catch (err) {
+      console.error(err);
+      setError('Failed to load products');
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, [token, selectedCategory]);
 
   // Handle product deletion
   const handleDelete = async (productId: string) => {
@@ -53,8 +68,8 @@ export default function AdminProducts() {
   // Handle adding a new product
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !price) {
-      setError('Name and price are required.');
+    if (!name || !description || !price || !imageUrl || !category) {
+      setError('All fields are required.');
       return;
     }
     
@@ -62,8 +77,8 @@ export default function AdminProducts() {
     try {
       const response = await axios.post(
         'http://localhost:5000/api/admin/products',
-        { name, description, price: parseFloat(price), imageUrl },
-        { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
+        { name, description, price: parseFloat(price), imageUrl, category },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setProducts([...products, response.data.product]);
       resetForm();
@@ -78,9 +93,10 @@ export default function AdminProducts() {
   const handleEdit = (product: Product) => {
     setEditingProduct(product);
     setName(product.name);
-    setDescription(product.description || '');
+    setDescription(product.description);
     setPrice(product.price.toString());
-    setImageUrl(product.imageUrl || '');
+    setImageUrl(product.imageUrl);
+    setCategory(product.category);
   };
 
   // Handle updating an existing product
@@ -91,7 +107,7 @@ export default function AdminProducts() {
     try {
       const response = await axios.put(
         `http://localhost:5000/api/admin/products/${editingProduct._id}`,
-        { name, description, price: parseFloat(price), imageUrl },
+        { name, description, price: parseFloat(price), imageUrl, category },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -115,13 +131,48 @@ export default function AdminProducts() {
     setDescription('');
     setPrice('');
     setImageUrl('');
+    setCategory('Breakfast');
+    setError('');
+  };
+
+  const handleToggleAvailability = async (productId: string) => {
+    try {
+      const response = await axios.patch(
+        `http://localhost:5000/api/admin/products/${productId}/toggle-availability`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      setProducts(prevProducts =>
+        prevProducts.map(prod =>
+          prod._id === productId ? response.data.product : prod
+        )
+      );
+    } catch (err) {
+      console.error(err);
+      setError('Failed to toggle product availability');
+    }
   };
 
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Manage Products</h1>
       
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p className="text-red-500 mb-4">{error}</p>}
+
+      {/* Category Filter */}
+      <div className="mb-6">
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="p-2 border rounded"
+        >
+          <option value="">All Categories</option>
+          {CATEGORIES.map(cat => (
+            <option key={cat} value={cat}>{cat}</option>
+          ))}
+        </select>
+      </div>
 
       {/* Product Creation / Edit Form */}
       <div className="mb-6 p-4 border rounded shadow-lg bg-gray-100">
@@ -142,6 +193,7 @@ export default function AdminProducts() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className="p-2 border rounded"
+            required
           />
           <input
             type="number"
@@ -157,7 +209,18 @@ export default function AdminProducts() {
             value={imageUrl}
             onChange={(e) => setImageUrl(e.target.value)}
             className="p-2 border rounded"
+            required
           />
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value as Product['category'])}
+            className="p-2 border rounded"
+            required
+          >
+            {CATEGORIES.map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
           <div className="flex space-x-4">
             <button
               type="submit"
@@ -189,6 +252,10 @@ export default function AdminProducts() {
             <h2 className="text-xl font-bold">{product.name}</h2>
             <p className="text-gray-700">{product.description}</p>
             <p className="mt-2">${product.price.toFixed(2)}</p>
+            <p className="text-sm text-gray-600">Category: {product.category}</p>
+            <p className={`text-sm ${product.isAvailable ? 'text-green-600' : 'text-red-600'}`}>
+              Status: {product.isAvailable ? 'Available' : 'Unavailable'}
+            </p>
             <div className="mt-4 flex space-x-2">
               <button
                 onClick={() => handleEdit(product)}
@@ -201,6 +268,14 @@ export default function AdminProducts() {
                 className="bg-red-500 text-white py-1 px-3 rounded"
               >
                 Delete
+              </button>
+              <button
+                onClick={() => handleToggleAvailability(product._id)}
+                className={`py-1 px-3 rounded text-white ${
+                  product.isAvailable ? 'bg-orange-500' : 'bg-green-500'
+                }`}
+              >
+                {product.isAvailable ? 'Mark Unavailable' : 'Mark Available'}
               </button>
             </div>
           </div>

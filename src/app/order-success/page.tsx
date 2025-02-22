@@ -3,21 +3,38 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
+import { FaCheckCircle, FaTruck, FaMapMarkerAlt, FaReceipt } from 'react-icons/fa';
+
+interface OrderProduct {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  image?: string;
+}
+
+interface OrderItem {
+  product: OrderProduct;
+  quantity: number;
+}
+
+type PaymentMethod = 'cod' | 'card' | 'whatsapp';
 
 interface OrderDetails {
   _id: string;
   trackingId: string;
-  items: Array<{
-    product: {
-      name: string;
-      price: number;
-      image?: string;
-    };
-    quantity: number;
-  }>;
+  items: OrderItem[];
   total: number;
-  paymentStatus: string;
+  paymentStatus: 'Pending' | 'Paid' | 'Failed';
   orderStatus: string;
+  paymentMethod: PaymentMethod;
+  deliveryAddress?: {
+    street?: string;
+    city?: string;
+    state?: string;
+    zipCode?: string;
+  };
+  createdAt: string;
 }
 
 export default function OrderSuccessPage() {
@@ -33,9 +50,12 @@ export default function OrderSuccessPage() {
       const fetchOrderDetails = async () => {
         try {
           const token = localStorage.getItem('token');
-          const response = await axios.get(`http://localhost:5000/api/order/${orderId}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
+          const response = await axios.get<{ order: OrderDetails }>(
+            `http://localhost:5000/api/order/${orderId}`,
+            {
+              headers: { Authorization: `Bearer ${token}` }
+            }
+          );
           
           setOrder(response.data.order);
           setLoading(false);
@@ -51,52 +71,156 @@ export default function OrderSuccessPage() {
   }, [searchParams]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="text-center text-red-500 p-6">{error}</div>;
   }
 
   if (!order) {
-    return <div>No order found</div>;
+    return <div className="text-center p-6">No order found</div>;
   }
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Order Success</h1>
-      
-      <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
-        <p>Your order has been placed successfully!</p>
-        <p>Tracking ID: {order.trackingId}</p>
+      <div className="text-center mb-8">
+        <FaCheckCircle className="text-green-500 text-6xl mx-auto mb-4" />
+        <h1 className="text-3xl font-bold text-gray-800">Order Successful!</h1>
+        <p className="text-gray-600 mt-2">Thank you for your order</p>
       </div>
 
-      <div className="bg-white shadow-md rounded p-6">
-        <h2 className="text-xl font-semibold mb-4">Order Details</h2>
-        
-        <div className="space-y-4">
-          {order.items.map((item, index) => (
-            <div key={index} className="flex items-center justify-between border-b pb-4">
-              <div className="flex items-center space-x-4">
-                {item.product.image && (
-                  <img 
-                    src={item.product.image} 
-                    alt={item.product.name} 
-                    className="w-16 h-16 object-cover rounded"
-                  />
-                )}
+      <div className="bg-white shadow-lg rounded-lg overflow-hidden mb-8">
+        <div className="p-6 border-b">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-sm text-gray-600">Order ID</p>
+              <p className="font-semibold">{order._id}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Date</p>
+              <p className="font-semibold">
+                {new Date(order.createdAt).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div className="flex items-center">
+              <FaReceipt className="text-blue-500 mr-2" />
+              <div>
+                <p className="text-sm text-gray-600">Payment Method</p>
+                <p className={`font-semibold ${
+                  order.paymentMethod === 'cod' ? 'text-orange-600' : 'text-green-600'
+                }`}>
+                  {order.paymentMethod.toUpperCase()}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <FaTruck className="text-blue-500 mr-2" />
+              <div>
+                <p className="text-sm text-gray-600">Order Status</p>
+                <p className="font-semibold">{order.orderStatus}</p>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <FaMapMarkerAlt className="text-blue-500 mr-2" />
+              <div>
+                <p className="text-sm text-gray-600">Tracking ID</p>
+                <p className="font-semibold">{order.trackingId}</p>
+              </div>
+            </div>
+          </div>
+
+          {order.paymentMethod === 'cod' && order.deliveryAddress && (
+            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-start">
+                <FaMapMarkerAlt className="text-blue-500 mt-1 mr-2" />
                 <div>
-                  <p className="font-medium">{item.product.name}</p>
-                  <p className="text-gray-600">Quantity: {item.quantity}</p>
+                  <p className="text-sm font-medium text-gray-600">Delivery Address</p>
+                  <p className="font-semibold mt-1">
+                    {[
+                      order.deliveryAddress.street,
+                      order.deliveryAddress.city,
+                      order.deliveryAddress.state,
+                      order.deliveryAddress.zipCode
+                    ].filter(Boolean).join(', ')}
+                  </p>
+                  <p className="text-sm text-orange-600 mt-2">
+                    * Please keep the exact amount ready for Cash on Delivery
+                  </p>
                 </div>
               </div>
-              <p className="font-medium">${(item.product.price * item.quantity).toFixed(2)}</p>
             </div>
-          ))}
+          )}
+        </div>
+
+        <div className="p-6">
+          <h2 className="text-xl font-semibold mb-4">Order Items</h2>
           
-          <div className="flex justify-between pt-4">
-            <p className="font-bold">Total:</p>
-            <p className="font-bold">${order.total.toFixed(2)}</p>
+          <div className="space-y-6">
+            {order.items.map((item, index) => (
+              <div key={`${item.product._id}-${index}`} 
+                className="flex flex-col md:flex-row md:items-center justify-between border rounded-lg p-4 hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-start space-x-4">
+                  {item.product.image && (
+                    <img 
+                      src={item.product.image} 
+                      alt={item.product.name} 
+                      className="w-24 h-24 object-cover rounded-lg"
+                    />
+                  )}
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-lg text-gray-800">
+                      {item.product.name}
+                    </h3>
+                    <p className="text-gray-600 text-sm mt-1">
+                      {item.product.description}
+                    </p>
+                    <div className="mt-2 flex items-center space-x-4">
+                      <span className="text-gray-600">
+                        Quantity: {item.quantity}
+                      </span>
+                      <span className="text-gray-600">
+                        ${item.product.price.toFixed(2)} each
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-4 md:mt-0 md:ml-4 text-right">
+                  <p className="font-bold text-lg text-gray-800">
+                    ${(item.product.price * item.quantity).toFixed(2)}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 pt-4 border-t">
+            <div className="flex justify-between items-center mb-2">
+              <p className="text-gray-600">Payment Status</p>
+              <p className={`font-medium ${
+                order.paymentStatus === 'Paid' ? 'text-green-600' : 'text-orange-600'
+              }`}>
+                {order.paymentStatus}
+              </p>
+            </div>
+            <div className="flex justify-between items-center">
+              <p className="font-bold text-xl">Total Amount</p>
+              <p className="font-bold text-xl text-blue-600">
+                ${order.total.toFixed(2)}
+              </p>
+            </div>
           </div>
         </div>
       </div>
