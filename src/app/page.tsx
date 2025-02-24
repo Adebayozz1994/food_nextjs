@@ -13,6 +13,9 @@ const MainPage = () => {
   const navigateToSignup = () => {
     router.push('/food/signup');
   };
+  const navigateToProduct = () => {
+    router.push('/food/products');
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -49,7 +52,7 @@ const MainPage = () => {
                 Order from your favorite restaurants and get food delivered right to your doorstep.
               </p>
               <button 
-                onClick={navigateToSignup}
+                onClick={navigateToProduct}
                 className="bg-yellow-500 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-yellow-600 transition-colors"
               >
                 Order Now

@@ -1,8 +1,8 @@
-'use client';
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
-import { toast } from 'react-hot-toast';
+"use client";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 interface Product {
   _id: string;
@@ -58,20 +58,23 @@ export default function AllOrders() {
 
   const fetchOrders = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
-        router.push('/login');
+        router.push("/login");
         return;
       }
 
-      const response = await axios.get('http://localhost:5000/api/admin/orders', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
+      const response = await axios.get(
+        "http://localhost:5000/api/admin/orders",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
-      });
+      );
 
-      console.log('Orders response:', response.data); // Debug log
+      console.log("Orders response:", response.data);
 
       if (response.data.success && response.data.data.orders) {
         setOrders(response.data.data.orders);
@@ -83,21 +86,25 @@ export default function AllOrders() {
 
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching orders:', error);
+      console.error("Error fetching orders:", error);
       if (axios.isAxiosError(error) && error.response?.status === 401) {
-        router.push('/login');
+        router.push("/login");
         return;
       }
-      setError('Failed to fetch orders');
+      setError("Failed to fetch orders");
       setLoading(false);
     }
   };
 
-  const updateOrderStatus = async (orderId: string, orderStatus: string, paymentStatus: string) => {
+  const updateOrderStatus = async (
+    orderId: string,
+    orderStatus: string,
+    paymentStatus: string
+  ) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
-        router.push('/login');
+        router.push("/login");
         return;
       }
 
@@ -105,20 +112,20 @@ export default function AllOrders() {
         `http://localhost:5000/api/admin/orders/${orderId}`,
         {
           orderStatus,
-          paymentStatus
+          paymentStatus,
         },
         {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
       if (response.data.success) {
-        toast.success('Order updated successfully');
-        fetchOrders(); // Refresh the orders list
+        toast.success("Order updated successfully");
+        fetchOrders();
       }
     } catch (error) {
-      console.error('Error updating order:', error);
-      toast.error('Failed to update order');
+      console.error("Error updating order:", error);
+      toast.error("Failed to update order");
     }
   };
 
@@ -131,17 +138,13 @@ export default function AllOrders() {
   }
 
   if (error) {
-    return (
-      <div className="text-center text-red-500 p-4">
-        {error}
-      </div>
-    );
+    return <div className="text-center text-red-500 p-4">{error}</div>;
   }
 
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">All Orders</h1>
-      
+
       {/* Stats Section */}
       {stats && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -164,23 +167,32 @@ export default function AllOrders() {
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <p className="text-sm text-gray-600">Order ID: {order._id}</p>
-                  <p className="text-sm text-gray-600">Tracking ID: {order.trackingId}</p>
+                  <p className="text-sm text-gray-600">
+                    Tracking ID: {order.trackingId}
+                  </p>
                   <p className="text-sm text-gray-600">
                     Date: {new Date(order.createdAt).toLocaleDateString()}
                   </p>
-                  <p className="font-semibold">Total: ${order.total.toFixed(2)}</p>
+                  <p className="font-semibold">
+                    Total: ${order.total.toFixed(2)}
+                  </p>
                 </div>
               </div>
 
               <div className="mb-4">
                 <h3 className="font-semibold mb-2">Customer Details:</h3>
-                <p>{order.user.firstName} {order.user.lastName}</p>
+                <p>
+                  {order.user.firstName} {order.user.lastName}
+                </p>
                 <p>{order.user.email}</p>
                 {order.deliveryAddress && (
                   <div className="mt-2">
                     <p className="font-semibold">Delivery Address:</p>
                     <p>{order.deliveryAddress.street}</p>
-                    <p>{order.deliveryAddress.city}, {order.deliveryAddress.state}</p>
+                    <p>
+                      {order.deliveryAddress.city},{" "}
+                      {order.deliveryAddress.state}
+                    </p>
                     <p>Phone: {order.deliveryAddress.phoneNumber}</p>
                   </div>
                 )}
@@ -191,8 +203,16 @@ export default function AllOrders() {
                 <div className="space-y-2">
                   {order.items.map((item, index) => (
                     <div key={index} className="flex justify-between">
-                      <span>{item.product.name} x {item.quantity}</span>
-                      <span>${(item.product.price * item.quantity).toFixed(2)}</span>
+                      <span>
+                        {item.product?.name || "Unknown Product"} x{" "}
+                        {item.quantity}
+                      </span>
+                      <span>
+                        $
+                        {((item.product?.price || 0) * item.quantity).toFixed(
+                          2
+                        )}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -204,7 +224,13 @@ export default function AllOrders() {
                     <span className="font-semibold mr-2">Order Status:</span>
                     <select
                       value={order.orderStatus}
-                      onChange={(e) => updateOrderStatus(order._id, e.target.value, order.paymentStatus)}
+                      onChange={(e) =>
+                        updateOrderStatus(
+                          order._id,
+                          e.target.value,
+                          order.paymentStatus
+                        )
+                      }
                       className="border rounded p-2"
                     >
                       <option value="Pending">Pending</option>
@@ -214,12 +240,18 @@ export default function AllOrders() {
                       <option value="Cancelled">Cancelled</option>
                     </select>
                   </div>
-                  
+
                   <div>
                     <span className="font-semibold mr-2">Payment Status:</span>
                     <select
                       value={order.paymentStatus}
-                      onChange={(e) => updateOrderStatus(order._id, order.orderStatus, e.target.value)}
+                      onChange={(e) =>
+                        updateOrderStatus(
+                          order._id,
+                          order.orderStatus,
+                          e.target.value
+                        )
+                      }
                       className="border rounded p-2"
                     >
                       <option value="Pending">Pending</option>
@@ -232,22 +264,33 @@ export default function AllOrders() {
               </div>
 
               <div className="mt-4 flex justify-between items-center">
-                <span className={`px-3 py-1 rounded-full text-sm ${
-                  order.orderStatus === 'Delivered' ? 'bg-green-100 text-green-800' :
-                  order.orderStatus === 'Cancelled' ? 'bg-red-100 text-red-800' :
-                  order.orderStatus === 'Shipped' ? 'bg-blue-100 text-blue-800' :
-                  order.orderStatus === 'Processing' ? 'bg-yellow-100 text-yellow-800' :
-                  'bg-gray-100 text-gray-800'
-                }`}>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm ${
+                    order.orderStatus === "Delivered"
+                      ? "bg-green-100 text-green-800"
+                      : order.orderStatus === "Cancelled"
+                      ? "bg-red-100 text-red-800"
+                      : order.orderStatus === "Shipped"
+                      ? "bg-blue-100 text-blue-800"
+                      : order.orderStatus === "Processing"
+                      ? "bg-yellow-100 text-yellow-800"
+                      : "bg-gray-100 text-gray-800"
+                  }`}
+                >
                   Order: {order.orderStatus}
                 </span>
 
-                <span className={`px-3 py-1 rounded-full text-sm ${
-                  order.paymentStatus === 'Paid' ? 'bg-green-100 text-green-800' :
-                  order.paymentStatus === 'Failed' ? 'bg-red-100 text-red-800' :
-                  order.paymentStatus === 'Refunded' ? 'bg-purple-100 text-purple-800' :
-                  'bg-yellow-100 text-yellow-800'
-                }`}>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm ${
+                    order.paymentStatus === "Paid"
+                      ? "bg-green-100 text-green-800"
+                      : order.paymentStatus === "Failed"
+                      ? "bg-red-100 text-red-800"
+                      : order.paymentStatus === "Refunded"
+                      ? "bg-purple-100 text-purple-800"
+                      : "bg-yellow-100 text-yellow-800"
+                  }`}
+                >
                   Payment: {order.paymentStatus}
                 </span>
               </div>
@@ -258,9 +301,7 @@ export default function AllOrders() {
             </div>
           ))
         ) : (
-          <div className="text-center text-gray-500">
-            No orders found
-          </div>
+          <div className="text-center text-gray-500">No orders found</div>
         )}
       </div>
     </div>

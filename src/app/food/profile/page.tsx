@@ -1,8 +1,8 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import axios, { AxiosError, AxiosResponse } from 'axios';
-import { toast } from 'react-hot-toast';
+"use client";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { toast } from "react-hot-toast";
 
 interface OrderProduct {
   name: string;
@@ -55,14 +55,16 @@ export default function Profile() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'security'>('profile');
+  const [activeTab, setActiveTab] = useState<"profile" | "orders" | "security">(
+    "profile"
+  );
 
   // Form states
-  const [firstName, setFirstName] = useState<string>('');
-  const [lastName, setLastName] = useState<string>('');
-  const [currentPassword, setCurrentPassword] = useState<string>('');
-  const [newPassword, setNewPassword] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [currentPassword, setCurrentPassword] = useState<string>("");
+  const [newPassword, setNewPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
 
   useEffect(() => {
     fetchUserProfile();
@@ -71,18 +73,16 @@ export default function Profile() {
 
   const fetchUserProfile = async (): Promise<void> => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
-        router.push('/login');
+        router.push("/login");
         return;
       }
 
-      const response: AxiosResponse<ApiResponse<UserResponse>> = await axios.get(
-        'http://localhost:5000/api/user/profile',
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
+      const response: AxiosResponse<ApiResponse<UserResponse>> =
+        await axios.get("http://localhost:5000/api/user/profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
       if (response.data.success) {
         setUser(response.data.data.user);
@@ -93,9 +93,9 @@ export default function Profile() {
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         const err = error as ApiError;
-        toast.error(err.response?.data?.message || 'Failed to fetch profile');
+        toast.error(err.response?.data?.message || "Failed to fetch profile");
       } else {
-        toast.error('An unexpected error occurred');
+        toast.error("An unexpected error occurred");
       }
       setLoading(false);
     }
@@ -103,15 +103,13 @@ export default function Profile() {
 
   const fetchUserOrders = async (): Promise<void> => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) return;
 
-      const response: AxiosResponse<ApiResponse<OrdersResponse>> = await axios.get(
-        'http://localhost:5000/api/user/orders',
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
+      const response: AxiosResponse<ApiResponse<OrdersResponse>> =
+        await axios.get("http://localhost:5000/api/user/orders", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
       if (response.data.success) {
         setOrders(response.data.data.orders);
@@ -119,92 +117,97 @@ export default function Profile() {
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         const err = error as ApiError;
-        toast.error(err.response?.data?.message || 'Failed to fetch orders');
+        toast.error(err.response?.data?.message || "Failed to fetch orders");
       } else {
-        toast.error('An unexpected error occurred');
+        toast.error("An unexpected error occurred");
       }
     }
   };
 
-  const handleUpdateProfile = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleUpdateProfile = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) return;
 
-      const response: AxiosResponse<ApiResponse<UserResponse>> = await axios.put(
-        'http://localhost:5000/api/user/update-profile',
-        { firstName, lastName },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response: AxiosResponse<ApiResponse<UserResponse>> =
+        await axios.put(
+          "http://localhost:5000/api/user/update-profile",
+          { firstName, lastName },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
 
       if (response.data.success) {
-        toast.success('Profile updated successfully');
+        toast.success("Profile updated successfully");
         fetchUserProfile();
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         const err = error as ApiError;
-        toast.error(err.response?.data?.message || 'Failed to update profile');
+        toast.error(err.response?.data?.message || "Failed to update profile");
       } else {
-        toast.error('An unexpected error occurred');
+        toast.error("An unexpected error occurred");
       }
     }
   };
 
-  const handleUpdatePassword = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleUpdatePassword = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
-    
+
     if (newPassword !== confirmPassword) {
-      toast.error('New passwords do not match');
+      toast.error("New passwords do not match");
       return;
     }
 
     if (newPassword.length < 6) {
-      toast.error('Password must be at least 6 characters long');
+      toast.error("Password must be at least 6 characters long");
       return;
     }
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
-        router.push('/login');
+        router.push("/login");
         return;
       }
 
       const response: AxiosResponse<ApiResponse<null>> = await axios.put(
-        'http://localhost:5000/api/user/update-password',
+        "http://localhost:5000/api/user/update-password",
         {
           currentPassword,
-          newPassword
+          newPassword,
         },
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
+            "Content-Type": "application/json",
+          },
         }
       );
 
       if (response.data.success) {
-        toast.success('Password updated successfully');
-        setCurrentPassword('');
-        setNewPassword('');
-        setConfirmPassword('');
+        toast.success("Password updated successfully");
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         const err = error as ApiError;
-        toast.error(err.response?.data?.message || 'Failed to update password');
+        toast.error(err.response?.data?.message || "Failed to update password");
       } else {
-        toast.error('An unexpected error occurred');
+        toast.error("An unexpected error occurred");
       }
     }
   };
 
   const handleLogout = (): void => {
-    localStorage.removeItem('token');
-    router.push('/food/login');
+    localStorage.removeItem("token");
+    router.push("/food/login");
   };
 
   if (loading) {
@@ -222,29 +225,43 @@ export default function Profile() {
           <div className="p-6">
             <div className="flex mb-6 border-b">
               <button
-                className={`mr-4 pb-2 ${activeTab === 'profile' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'}`}
-                onClick={() => setActiveTab('profile')}
+                className={`mr-4 pb-2 ${
+                  activeTab === "profile"
+                    ? "border-b-2 border-blue-500 text-blue-500"
+                    : "text-gray-500"
+                }`}
+                onClick={() => setActiveTab("profile")}
               >
                 Profile
               </button>
               <button
-                className={`mr-4 pb-2 ${activeTab === 'orders' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'}`}
-                onClick={() => setActiveTab('orders')}
+                className={`mr-4 pb-2 ${
+                  activeTab === "orders"
+                    ? "border-b-2 border-blue-500 text-blue-500"
+                    : "text-gray-500"
+                }`}
+                onClick={() => setActiveTab("orders")}
               >
                 Orders
               </button>
               <button
-                className={`mr-4 pb-2 ${activeTab === 'security' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'}`}
-                onClick={() => setActiveTab('security')}
+                className={`mr-4 pb-2 ${
+                  activeTab === "security"
+                    ? "border-b-2 border-blue-500 text-blue-500"
+                    : "text-gray-500"
+                }`}
+                onClick={() => setActiveTab("security")}
               >
                 Security
               </button>
             </div>
 
-            {activeTab === 'profile' && (
+            {activeTab === "profile" && (
               <form onSubmit={handleUpdateProfile} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">First Name</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    First Name
+                  </label>
                   <input
                     type="text"
                     value={firstName}
@@ -253,7 +270,9 @@ export default function Profile() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Last Name</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Last Name
+                  </label>
                   <input
                     type="text"
                     value={lastName}
@@ -262,7 +281,9 @@ export default function Profile() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Email</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Email
+                  </label>
                   <input
                     type="email"
                     value={user?.email}
@@ -279,7 +300,7 @@ export default function Profile() {
               </form>
             )}
 
-            {activeTab === 'orders' && (
+            {activeTab === "orders" && (
               <div className="space-y-4">
                 {orders.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
@@ -287,20 +308,31 @@ export default function Profile() {
                   </div>
                 ) : (
                   orders.map((order) => (
-                    <div key={order._id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div
+                      key={order._id}
+                      className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                    >
                       <div className="flex justify-between items-start mb-4">
                         <div>
-                          <p className="font-semibold text-gray-800">Order ID: {order._id}</p>
-                          <p className="text-sm text-gray-600">
-                            Date: {new Date(order.createdAt).toLocaleDateString('en-US', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
+                          <p className="font-semibold text-gray-800">
+                            Order ID: {order._id}
                           </p>
-                          <p className="text-sm text-gray-600">Tracking ID: {order.trackingId}</p>
+                          <p className="text-sm text-gray-600">
+                            Date:{" "}
+                            {new Date(order.createdAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              }
+                            )}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            Tracking ID: {order.trackingId}
+                          </p>
                         </div>
                         <div className="text-right">
                           <p className="font-bold text-lg text-gray-800">
@@ -313,42 +345,58 @@ export default function Profile() {
                       </div>
 
                       <div className="space-y-2">
-                        {order.items.map((item, index) => (
-                          <div key={index} className="flex items-center justify-between py-2 border-t">
-                            <div className="flex items-center space-x-4">
-                              {item.product.image && (
-                                <img
+                        {order.items
+                          .filter((item) => item.product)
+                          .map((item, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center justify-between py-2 border-t"
+                            >
+                              <div className="flex items-center space-x-4">
+                                {/* <img
                                   src={item.product.image}
                                   alt={item.product.name}
                                   className="w-16 h-16 object-cover rounded"
-                                />
-                              )}
-                              <div>
-                                <p className="font-medium text-gray-800">{item.product.name}</p>
-                                <p className="text-sm text-gray-600">
-                                  Quantity: {item.quantity} × ${item.product.price.toFixed(2)}
-                                </p>
+                                /> */}
+                                <div>
+                                  <p className="font-medium text-gray-800">
+                                    {item.product.name}
+                                  </p>
+                                  <p className="text-sm text-gray-600">
+                                    Quantity: {item.quantity} × $
+                                    {item.product.price.toFixed(2)}
+                                  </p>
+                                </div>
                               </div>
+                              <p className="font-medium text-gray-800">
+                                $
+                                {(item.quantity * item.product.price).toFixed(
+                                  2
+                                )}
+                              </p>
                             </div>
-                            <p className="font-medium text-gray-800">
-                              ${(item.quantity * item.product.price).toFixed(2)}
-                            </p>
-                          </div>
-                        ))}
+                          ))}
                       </div>
 
                       <div className="mt-4 flex justify-between items-center pt-4 border-t">
-                        <span className={`px-4 py-2 rounded-full text-sm font-medium ${
-                          order.orderStatus === 'Delivered' ? 'bg-green-100 text-green-800' :
-                          order.orderStatus === 'Cancelled' ? 'bg-red-100 text-red-800' :
-                          'bg-blue-100 text-blue-800'
-                        }`}>
+                        <span
+                          className={`px-4 py-2 rounded-full text-sm font-medium ${
+                            order.orderStatus === "Delivered"
+                              ? "bg-green-100 text-green-800"
+                              : order.orderStatus === "Cancelled"
+                              ? "bg-red-100 text-red-800"
+                              : "bg-blue-100 text-blue-800"
+                          }`}
+                        >
                           Order Status: {order.orderStatus}
                         </span>
-                        <span className={`px-4 py-2 rounded-full text-sm font-medium ${
-                          order.paymentStatus === 'Paid' ? 'bg-green-100 text-green-800' :
-                          'bg-yellow-100 text-yellow-800'
-                        }`}>
+                        <span
+                          className={`px-4 py-2 rounded-full text-sm font-medium ${
+                            order.paymentStatus === "Paid"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }`}
+                        >
                           Payment Status: {order.paymentStatus}
                         </span>
                       </div>
@@ -358,12 +406,14 @@ export default function Profile() {
               </div>
             )}
 
-            {activeTab === 'security' && (
+            {activeTab === "security" && (
               <div className="space-y-6">
                 <form onSubmit={handleUpdatePassword} className="space-y-4">
                   <h3 className="text-lg font-medium">Update Password</h3>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Current Password</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Current Password
+                    </label>
                     <input
                       type="password"
                       value={currentPassword}
@@ -372,7 +422,9 @@ export default function Profile() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">New Password</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      New Password
+                    </label>
                     <input
                       type="password"
                       value={newPassword}
@@ -381,7 +433,9 @@ export default function Profile() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Confirm New Password</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Confirm New Password
+                    </label>
                     <input
                       type="password"
                       value={confirmPassword}
