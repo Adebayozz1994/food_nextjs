@@ -16,7 +16,7 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/login', { email, password });
+      const response = await axios.post('https://food-delivery-node-h1lq.onrender.com/api/login', { email, password });
       if (response.data.status) {
         const { token, user } = response.data;
         localStorage.setItem('token', token);

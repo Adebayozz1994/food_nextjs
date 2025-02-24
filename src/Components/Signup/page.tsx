@@ -19,7 +19,7 @@ const Signup = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/register', {
+      const response = await axios.post('https://food-delivery-node-h1lq.onrender.com/api/register', {
         firstName,
         lastName,
         email,

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaShoppingCart, FaSpinner } from "react-icons/fa";
 import Link from "next/link";
-import Navbar from "@/Components/Navbar/page";
+// import Navbar from "@/Components/Navbar/page";
 
 interface Product {
   _id: string;
@@ -212,7 +212,7 @@ export default function Products() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      {/* <Navbar /> */}
 
       <div className="relative pt-16">
         {/* Cart Icon */}
