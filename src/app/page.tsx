@@ -41,10 +41,10 @@ const MainPage = () => {
 
       {/* Hero Section */}
       <div className="pt-16">
-        <div className="relative h-[600px] bg-gradient-to-r from-blue-600 to-blue-400">
+        <div className="relative h-auto md:h-[600px] bg-gradient-to-r from-blue-600 to-blue-400">
           <div className="absolute inset-0 bg-black opacity-50"></div>
-          <div className="container mx-auto px-6 relative z-10 h-full flex items-center">
-            <div className="w-full md:w-1/2 text-white">
+          <div className="container mx-auto px-6 relative z-10 h-full flex flex-col-reverse md:flex-row items-center">
+            <div className="w-full md:w-1/2 text-white p-2">
               <h1 className="text-5xl font-bold mb-6">
                 Delicious Food<br />Delivered To Your Door
               </h1>
@@ -58,18 +58,12 @@ const MainPage = () => {
                 Order Now
               </button>
             </div>
-            <div className="hidden md:block w-1/2 pl-12">
-              <div className="relative">
+            <div className="w-full md:w-1/2 pl-0 md:pl-12 mt-8 md:mt-0">
+              <div className="relative m-4">
                 <img 
                   src="https://img.freepik.com/premium-psd/flat-lay-free-food-service-arrangement-with-background-mock-up_23-2148421300.jpg?uid=R147290862&ga=GA1.1.1457401061.1705098422&semt=ais_hybrid" 
                   alt="Delicious Food"
-                  className="rounded-lg shadow-2xl transform hover:scale-105 transition-transform duration-300"
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                    maxHeight: '500px',
-                    objectFit: 'cover',
-                  }}
+                  className="rounded-lg shadow-2xl transform hover:scale-105 transition-transform duration-300 w-full h-auto max-h-[500px] object-cover"
                 />
                 <div className="absolute -bottom-4 -right-4 bg-white p-4 rounded-lg shadow-lg">
                   <div className="text-blue-600 font-bold text-xl">30 min</div>

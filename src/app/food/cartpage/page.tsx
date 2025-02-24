@@ -66,16 +66,16 @@ export default function CartPage() {
     router.push('/food/carts');
   };
 
-  const handleOrderSuccess = () => {
-    // Clear local storage cart data
-    localStorage.removeItem('cart');
+  // const handleOrderSuccess = () => {
+  //   // Clear local storage cart data
+  //   localStorage.removeItem('cart');
     
-    // Dispatch custom event
-    window.dispatchEvent(new Event('orderCompleted'));
+  //   // Dispatch custom event
+  //   window.dispatchEvent(new Event('orderCompleted'));
     
-    // Navigate to success page
-    router.push('/food/order-success');
-  };
+  //   // Navigate to success page
+  //   router.push('/food/order-success');
+  // };
 
   const totalPrice = cartItems.reduce(
     (total, item) => total + item.product.price * item.quantity,
@@ -83,16 +83,16 @@ export default function CartPage() {
   );
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h2 className="text-2xl font-bold">Shopping Cart</h2>
+    <div className="max-w-4xl mx-auto p-1">
+      <h2 className="text-2xl font-bold mb-10">Shopping Cart</h2>
       {cartItems.length === 0 ? (
         <p className="text-gray-500 mt-4">Your cart is empty</p>
       ) : (
         <>
           {cartItems.map((item) => (
-            <div key={item.product._id} className="flex items-center justify-between p-4 border-b">
-              <img src={item.product.imageUrl} alt={item.product.name} className="w-16 h-16 rounded" />
-              <p className="font-semibold">{item.product.name}</p>
+            <div key={item.product._id} className="flex items-center justify-between border-b mb-5">
+              <img src={item.product.imageUrl} alt={item.product.name} className="w-12 h-12 rounded" />
+              <p className="font-semibold m-1">{item.product.name}</p>
               <p>${item.product.price.toFixed(2)}</p>
               <input
                 type="number"

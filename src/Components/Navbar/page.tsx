@@ -44,11 +44,14 @@ const Navbar = () => {
             <Link href="/" className="text-white hover:text-gray-300 transition duration-300">
               Home
             </Link>
-            <Link href="/about" className="text-white hover:text-gray-300 transition duration-300">
+            <Link href="/food/about" className="text-white hover:text-gray-300 transition duration-300">
               About
             </Link>
-            <Link href="/contact" className="text-white hover:text-gray-300 transition duration-300">
+            <Link href="/food/contact" className="text-white hover:text-gray-300 transition duration-300">
               Contact
+            </Link>
+            <Link href="/food/profile" className="text-white hover:text-gray-300 transition duration-300">
+              Profile
             </Link>
             {user ? (
               <div className="text-white">
@@ -78,18 +81,25 @@ const Navbar = () => {
               Home
             </Link>
             <Link 
-              href="/about" 
+              href="/food/about" 
               className="text-white hover:text-gray-300 transition duration-300"
               onClick={() => setIsMenuOpen(false)}
             >
               About
             </Link>
             <Link 
-              href="/contact" 
+              href="/food/contact" 
               className="text-white hover:text-gray-300 transition duration-300"
               onClick={() => setIsMenuOpen(false)}
             >
               Contact
+            </Link>
+            <Link 
+              href="/food/profile" 
+              className="text-white hover:text-gray-300 transition duration-300"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Profile
             </Link>
             {user ? (
               <div className="text-white py-2 border-t border-gray-700">

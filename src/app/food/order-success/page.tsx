@@ -88,11 +88,11 @@ export default function OrderSuccessPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 relative">
-      {/* Continue Shopping Button */}
+    <div className="max-w-4xl mx-auto p-6 relative pb-24">
+      {/* Continue Shopping Button for Medium and Larger Screens */}
       <Link 
         href="/food/products" 
-        className="fixed top-4 right-4 z-50 flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md"
+        className="hidden md:block md:fixed md:top-4 md:right-4 z-50 flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md"
       >
         <FaShoppingBag className="text-lg" />
         <span>Continue Shopping</span>
@@ -106,7 +106,7 @@ export default function OrderSuccessPage() {
 
       <div className="bg-white shadow-lg rounded-lg overflow-hidden mb-8">
         <div className="p-6 border-b">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4 space-x-3">
             <div>
               <p className="text-sm text-gray-600">Order ID</p>
               <p className="font-semibold">{order._id}</p>
@@ -233,6 +233,17 @@ export default function OrderSuccessPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Continue Shopping Button for Small Screens as a Fixed Footer */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-white shadow-inner">
+        <Link 
+          href="/food/products" 
+          className="flex justify-center items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md"
+        >
+          <FaShoppingBag className="text-lg" />
+          <span>Continue Shopping</span>
+        </Link>
       </div>
     </div>
   );

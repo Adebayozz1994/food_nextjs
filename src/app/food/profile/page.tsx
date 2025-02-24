@@ -75,7 +75,7 @@ export default function Profile() {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        router.push("/login");
+        router.push("/food/login");
         return;
       }
 
