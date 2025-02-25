@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
+import Image from 'next/image';
 
 interface User {
   _id: string;
@@ -257,7 +258,7 @@ export default function AdminUsers() {
                   <div key={index} className="flex justify-between items-center border-b pb-2">
                     <div className="flex gap-4 items-center">
                       {item.product.image && (
-                        <img
+                        <Image
                           src={item.product.image}
                           alt={item.product.name}
                           className="w-16 h-16 object-cover rounded"

@@ -1,17 +1,9 @@
-// app/reset-password/[token]/page.tsx
-import { Metadata } from 'next';
-import ResetPasswordClient from './ResetPasswordClient';
+import React from 'react'
 
-export const metadata: Metadata = {
-  title: 'Reset Password',
-  description: 'Reset your password',
-};
-
-export default function ResetPassword({
-  params,
-}: {
-  params: { token: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
-  return <ResetPasswordClient token={params.token} />;
+const page = () => {
+  return (
+    <div></div>
+  )
 }
+
+export default page

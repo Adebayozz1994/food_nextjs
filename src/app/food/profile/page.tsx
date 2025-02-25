@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-hot-toast";
 
+
 interface OrderProduct {
   name: string;
   price: number;
@@ -65,11 +66,13 @@ export default function Profile() {
   const [currentPassword, setCurrentPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
-
+  
   useEffect(() => {
     fetchUserProfile();
     fetchUserOrders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  
 
   const fetchUserProfile = async (): Promise<void> => {
     try {
@@ -355,7 +358,7 @@ export default function Profile() {
                               className="flex items-center justify-between py-2 border-t"
                             >
                               <div className="flex items-center space-x-4">
-                                {/* <img
+                                {/* <Image
                                   src={item.product.image}
                                   alt={item.product.name}
                                   className="w-16 h-16 object-cover rounded"

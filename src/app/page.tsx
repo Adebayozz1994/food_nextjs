@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FaMotorcycle, FaUtensils, FaClock, FaStar } from 'react-icons/fa';
+import Image from 'next/image';
 
 interface User {
   email: string;
@@ -102,8 +103,8 @@ const MainPage = () => {
             </div>
             <div className="w-full md:w-1/2 pl-0 md:pl-12 mt-8 md:mt-0">
               <div className="relative m-4">
-                <img 
-                  src="https://img.freepik.com/premium-psd/flat-lay-free-food-service-arrangement-with-background-mock-up_23-2148421300.jpg?uid=R147290862&ga=GA1.1.1457401061.1705098422&semt=ais_hybrid" 
+                <Image 
+                  src="https://Image.freepik.com/premium-psd/flat-lay-free-food-service-arrangement-with-background-mock-up_23-2148421300.jpg?uid=R147290862&ga=GA1.1.1457401061.1705098422&semt=ais_hybrid" 
                   alt="Delicious Food"
                   className="rounded-lg shadow-2xl transform hover:scale-105 transition-transform duration-300 w-full h-auto max-h-[500px] object-cover"
                 />
@@ -173,7 +174,7 @@ const MainPage = () => {
               </div>
             </div>
             <div className="md:w-1/2">
-              <img 
+              <Image 
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjXl2kN7vUTLaWd6YWzFaxGsKNS7MkWlYM_g&s" 
                 alt="Mobile App" 
                 className="w-full max-w-md mx-auto"

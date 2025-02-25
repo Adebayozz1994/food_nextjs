@@ -53,8 +53,10 @@ export default function AllOrders() {
   const router = useRouter();
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
+  fetchOrders();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
+
 
   const fetchOrders = async () => {
     try {

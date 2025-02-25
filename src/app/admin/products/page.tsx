@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Image from 'next/image';
 
 // Define Product interface
 interface Product {
@@ -247,7 +248,7 @@ export default function AdminProducts() {
         {products.map((product) => (
           <div key={product._id} className="border p-4 rounded shadow">
             {product.imageUrl && (
-              <img src={product.imageUrl} alt={product.name} className="w-full h-48 object-cover mb-4" />
+              <Image src={product.imageUrl} alt={product.name} className="w-full h-48 object-cover mb-4" />
             )}
             <h2 className="text-xl font-bold">{product.name}</h2>
             <p className="text-gray-700">{product.description}</p>

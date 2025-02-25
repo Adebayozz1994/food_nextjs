@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaShoppingCart, FaSpinner } from "react-icons/fa";
 import Link from "next/link";
-// import Navbar from "@/Components/Navbar/page";
+import Image from 'next/image';
 
 interface Product {
   _id: string;
@@ -267,7 +267,7 @@ export default function Products() {
                     >
                       {/* Product Image */}
                       <div className="relative h-48">
-                        <img
+                        <Image
                           src={product.imageUrl}
                           alt={product.name}
                           className="w-full h-full object-cover"
