@@ -1,11 +1,11 @@
 // app/reset-password/[token]/page.tsx
+import React from 'react';
 import ResetPasswordClient from './ResetPasswordClient';
 
-interface PageProps {
+export default async function Page({
+  params,
+}: {
   params: { token: string };
-}
-
-export default async function Page({ params }: PageProps) {
-  // Pass the token as a prop to the client component
+}): Promise<React.ReactElement> {
   return <ResetPasswordClient token={params.token} />;
 }
