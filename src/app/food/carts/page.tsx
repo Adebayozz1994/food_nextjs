@@ -56,7 +56,7 @@ const CheckoutForm = () => {
     const token = localStorage.getItem('token');
     try {
       const { data, headers } = await axios.post<CheckoutResponse>(
-        'http://localhost:5000/api/order/checkout',
+        'https://food-delivery-node-h1lq.onrender.com/api/order/checkout',
         { 
           paymentMethod,
           ...(paymentMethod === 'cod' && { deliveryAddress })
@@ -103,7 +103,7 @@ const CheckoutForm = () => {
           const token = localStorage.getItem('token');
           // Fetch order details using the payment intent ID
           const response = await axios.get(
-            `http://localhost:5000/api/order/payment-intent/${paymentIntent.id}`,
+            `https://food-delivery-node-h1lq.onrender.com/api/order/payment-intent/${paymentIntent.id}`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
           // Redirect to the order success page using the orderId from the response

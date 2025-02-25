@@ -52,7 +52,7 @@ export default function OrderSuccessPage() {
         try {
           const token = localStorage.getItem('token');
           const response = await axios.get<{ order: OrderDetails }>(
-            `http://localhost:5000/api/order/${orderId}`,
+            `https://food-delivery-node-h1lq.onrender.com/api/order/${orderId}`,
             {
               headers: { Authorization: `Bearer ${token}` }
             }

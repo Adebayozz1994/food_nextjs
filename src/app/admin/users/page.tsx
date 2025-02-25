@@ -69,7 +69,7 @@ export default function AdminUsers() {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/admin/users', {
+      const response = await axios.get('https://food-delivery-node-h1lq.onrender.com/api/admin/users', {
         headers: { Authorization: `Bearer ${token}` },
       });
       
@@ -94,7 +94,7 @@ export default function AdminUsers() {
     
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/admin/users/${userId}`, {
+      await axios.delete(`https://food-delivery-node-h1lq.onrender.com/api/admin/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       await fetchUsers();
@@ -125,7 +125,7 @@ export default function AdminUsers() {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `http://localhost:5000/api/admin/users/${editingUser._id}`,
+        `https://food-delivery-node-h1lq.onrender.com/api/admin/users/${editingUser._id}`,
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -148,7 +148,7 @@ export default function AdminUsers() {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.get<{ order: Order }>(
-        `http://localhost:5000/api/admin/orders/${trackingId}`,
+        `https://food-delivery-node-h1lq.onrender.com/api/admin/orders/${trackingId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSelectedOrder(res.data.order);
@@ -169,14 +169,14 @@ export default function AdminUsers() {
     try {
       const token = localStorage.getItem('token');
       await axios.patch(
-        `http://localhost:5000/api/admin/orders/${selectedOrder.trackingId}/status`,
+        `https://food-delivery-node-h1lq.onrender.com/api/admin/orders/${selectedOrder.trackingId}/status`,
         { orderStatus: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
       // Refresh order details
       const res = await axios.get<{ order: Order }>(
-        `http://localhost:5000/api/admin/orders/${selectedOrder.trackingId}`,
+        `https://food-delivery-node-h1lq.onrender.com/api/admin/orders/${selectedOrder.trackingId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSelectedOrder(res.data.order);

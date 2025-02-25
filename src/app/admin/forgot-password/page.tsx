@@ -28,7 +28,7 @@ export default function ForgotPassword() {
     try {
       setLoading(true);
       const response: AxiosResponse<ForgotPasswordResponse> = await axios.post(
-        'http://localhost:5000/api/user/forgot-password',
+        'https://food-delivery-node-h1lq.onrender.com/api/user/forgot-password',
         { email }
       );
 

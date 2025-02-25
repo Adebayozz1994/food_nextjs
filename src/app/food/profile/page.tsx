@@ -80,7 +80,7 @@ export default function Profile() {
       }
 
       const response: AxiosResponse<ApiResponse<UserResponse>> =
-        await axios.get("http://localhost:5000/api/user/profile", {
+        await axios.get("https://food-delivery-node-h1lq.onrender.com/api/user/profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -107,7 +107,7 @@ export default function Profile() {
       if (!token) return;
 
       const response: AxiosResponse<ApiResponse<OrdersResponse>> =
-        await axios.get("http://localhost:5000/api/user/orders", {
+        await axios.get("https://food-delivery-node-h1lq.onrender.com/api/user/orders", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -134,7 +134,7 @@ export default function Profile() {
 
       const response: AxiosResponse<ApiResponse<UserResponse>> =
         await axios.put(
-          "http://localhost:5000/api/user/update-profile",
+          "https://food-delivery-node-h1lq.onrender.com/api/user/update-profile",
           { firstName, lastName },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -176,7 +176,7 @@ export default function Profile() {
       }
 
       const response: AxiosResponse<ApiResponse<null>> = await axios.put(
-        "http://localhost:5000/api/user/update-password",
+        "https://food-delivery-node-h1lq.onrender.com/api/user/update-password",
         {
           currentPassword,
           newPassword,
@@ -207,6 +207,8 @@ export default function Profile() {
 
   const handleLogout = (): void => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user"); 
+    setUser(null);
     router.push("/food/login");
   };
 

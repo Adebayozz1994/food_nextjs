@@ -24,7 +24,7 @@ export default function CartPage() {
   const fetchCart = async () => {
     try {
       const token = localStorage.getItem('token');
-      const { data } = await axios.get('http://localhost:5000/api/cart', {
+      const { data } = await axios.get('https://food-delivery-node-h1lq.onrender.com/api/cart', {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
       });
@@ -39,7 +39,7 @@ export default function CartPage() {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        'http://localhost:5000/api/cart/update',
+        'https://food-delivery-node-h1lq.onrender.com/api/cart/update',
         { productId, quantity },
         { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
       );
@@ -52,7 +52,7 @@ export default function CartPage() {
   const handleRemoveItem = async (productId: string) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/cart/remove/${productId}`, {
+      await axios.delete(`https://food-delivery-node-h1lq.onrender.com/api/cart/remove/${productId}`, {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
       });

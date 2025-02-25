@@ -36,7 +36,7 @@ export default function ResetPassword({ params }: { params: { token: string } })
     try {
       setLoading(true);
       const response = await axios.post<ResetPasswordResponse>(
-        `http://localhost:5000/api/user/reset-password/${params.token}`,
+        `https://food-delivery-node-h1lq.onrender.com/api/user/reset-password/${params.token}`,
         { password }
       );
 

@@ -35,8 +35,8 @@ export default function AdminProducts() {
     if (!token) return;
     try {
       const url = selectedCategory
-        ? `http://localhost:5000/api/admin/products/category/${selectedCategory}`
-        : 'http://localhost:5000/api/admin/products';
+        ? `https://food-delivery-node-h1lq.onrender.com/api/admin/products/category/${selectedCategory}`
+        : 'https://food-delivery-node-h1lq.onrender.com/api/admin/products';
       
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
@@ -55,7 +55,7 @@ export default function AdminProducts() {
   // Handle product deletion
   const handleDelete = async (productId: string) => {
     try {
-      await axios.delete(`http://localhost:5000/api/admin/products/${productId}`, {
+      await axios.delete(`https://food-delivery-node-h1lq.onrender.com/api/admin/products/${productId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProducts((prevProducts) => prevProducts.filter((prod) => prod._id !== productId));
@@ -76,7 +76,7 @@ export default function AdminProducts() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/admin/products',
+        'https://food-delivery-node-h1lq.onrender.com/api/admin/products',
         { name, description, price: parseFloat(price), imageUrl, category },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -106,7 +106,7 @@ export default function AdminProducts() {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/admin/products/${editingProduct._id}`,
+        `https://food-delivery-node-h1lq.onrender.com/api/admin/products/${editingProduct._id}`,
         { name, description, price: parseFloat(price), imageUrl, category },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -138,7 +138,7 @@ export default function AdminProducts() {
   const handleToggleAvailability = async (productId: string) => {
     try {
       const response = await axios.patch(
-        `http://localhost:5000/api/admin/products/${productId}/toggle-availability`,
+        `https://food-delivery-node-h1lq.onrender.com/api/admin/products/${productId}/toggle-availability`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

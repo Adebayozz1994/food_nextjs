@@ -65,7 +65,7 @@ export default function AllOrders() {
       }
 
       const response = await axios.get(
-        "http://localhost:5000/api/admin/orders",
+        "https://food-delivery-node-h1lq.onrender.com/api/admin/orders",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -109,7 +109,7 @@ export default function AllOrders() {
       }
 
       const response = await axios.patch(
-        `http://localhost:5000/api/admin/orders/${orderId}`,
+        `https://food-delivery-node-h1lq.onrender.com/api/admin/orders/${orderId}`,
         {
           orderStatus,
           paymentStatus,

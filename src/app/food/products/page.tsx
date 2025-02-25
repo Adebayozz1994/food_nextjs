@@ -66,11 +66,11 @@ export default function Products() {
 
   const fetchProducts = async () => {
     try {
-      let url = "http://localhost:5000/api/products";
+      let url = "https://food-delivery-node-h1lq.onrender.com/api/products";
 
       if (selectedCategory) {
         const encodedCategory = encodeURIComponent(selectedCategory);
-        url = `http://localhost:5000/api/products?category=${encodedCategory}`;
+        url = `https://food-delivery-node-h1lq.onrender.com/api/products?category=${encodedCategory}`;
       }
 
       const response = await axios.get<Product[]>(url);
@@ -92,7 +92,7 @@ export default function Products() {
       }
 
       const response = await axios.get<CartData>(
-        "http://localhost:5000/api/cart",
+        "https://food-delivery-node-h1lq.onrender.com/api/cart",
         {
           headers: { Authorization: `Bearer ${token}` },
           withCredentials: true,
@@ -126,7 +126,7 @@ export default function Products() {
 
       // Get current cart state
       const cartResponse = await axios.get<CartData>(
-        "http://localhost:5000/api/cart",
+        "https://food-delivery-node-h1lq.onrender.com/api/cart",
         {
           headers: { Authorization: `Bearer ${token}` },
           withCredentials: true,
@@ -140,7 +140,7 @@ export default function Products() {
       if (existingItem) {
         const newQuantity = existingItem.quantity + 1;
         await axios.put(
-          "http://localhost:5000/api/cart/update",
+          "https://food-delivery-node-h1lq.onrender.com/api/cart/update",
           {
             productId,
             quantity: newQuantity,
@@ -153,7 +153,7 @@ export default function Products() {
         setCartItemsCount((prev) => prev + 1);
       } else {
         await axios.post(
-          "http://localhost:5000/api/cart/add",
+          "https://food-delivery-node-h1lq.onrender.com/api/cart/add",
           { productId, quantity: 1 },
           {
             headers: { Authorization: `Bearer ${token}` },

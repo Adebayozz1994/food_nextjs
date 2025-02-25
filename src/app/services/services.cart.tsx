@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/cart';
+const API_URL = 'https://food-delivery-node-h1lq.onrender.com/api/cart';
 
 export const getCart = async () => {
   const response = await axios.get(API_URL, { withCredentials: true });
