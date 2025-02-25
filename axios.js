@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:5000/api', // Adjust your API URL
+  baseURL: 'https://food-delivery-node-h1lq.onrender.com',
   headers: {
     'Content-Type': 'application/json',
   },
