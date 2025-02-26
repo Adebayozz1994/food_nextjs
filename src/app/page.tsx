@@ -1,8 +1,8 @@
-'use client';
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { FaMotorcycle, FaUtensils, FaClock, FaStar } from 'react-icons/fa';
-import Image from 'next/image';
+"use client";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { FaMotorcycle, FaUtensils, FaClock, FaStar } from "react-icons/fa";
+import Image from "next/image";
 
 interface User {
   email: string;
@@ -15,30 +15,30 @@ const MainPage = () => {
 
   useEffect(() => {
     // Load the user from localStorage if present
-    const storedUser = localStorage.getItem('user');
+    const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
   }, []);
 
   const navigateToLogin = () => {
-    router.push('/food/login');
+    router.push("/food/login");
   };
 
   const navigateToSignup = () => {
-    router.push('/food/signup');
+    router.push("/food/signup");
   };
 
   const navigateToProduct = () => {
-    router.push('/food/products');
+    router.push("/food/products");
   };
 
   const handleLogout = () => {
     // Remove user details and token from localStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setUser(null);
-    router.push('/food/login');
+    router.push("/food/login");
   };
 
   return (
@@ -53,8 +53,8 @@ const MainPage = () => {
                 // If user is logged in, display email and logout button
                 <div className="flex items-center space-x-4">
                   <span className="text-gray-600">{user.email}</span>
-                  <button 
-                    onClick={handleLogout} 
+                  <button
+                    onClick={handleLogout}
                     className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
                   >
                     Logout
@@ -63,13 +63,13 @@ const MainPage = () => {
               ) : (
                 // If not logged in, show login and signup buttons
                 <>
-                  <button 
-                    onClick={navigateToLogin} 
+                  <button
+                    onClick={navigateToLogin}
                     className="text-gray-600 hover:text-blue-600"
                   >
                     Login
                   </button>
-                  <button 
+                  <button
                     onClick={navigateToSignup}
                     className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                   >
@@ -89,12 +89,15 @@ const MainPage = () => {
           <div className="container mx-auto px-6 relative z-10 h-full flex flex-col-reverse md:flex-row items-center">
             <div className="w-full md:w-1/2 text-white p-2">
               <h1 className="text-5xl font-bold mb-6">
-                Delicious Food<br />Delivered To Your Door
+                Delicious Food
+                <br />
+                Delivered To Your Door
               </h1>
               <p className="text-xl mb-8">
-                Order from your favorite restaurants and get food delivered right to your doorstep.
+                Order from your favorite restaurants and get food delivered
+                right to your doorstep.
               </p>
-              <button 
+              <button
                 onClick={navigateToProduct}
                 className="bg-yellow-500 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-yellow-600 transition-colors"
               >
@@ -102,11 +105,12 @@ const MainPage = () => {
               </button>
             </div>
             <div className="w-full md:w-1/2 pl-0 md:pl-12 mt-8 md:mt-0">
-              <div className="relative m-4">
-                <Image 
-                  src="https://Image.freepik.com/premium-psd/flat-lay-free-food-service-arrangement-with-background-mock-up_23-2148421300.jpg?uid=R147290862&ga=GA1.1.1457401061.1705098422&semt=ais_hybrid" 
+              <div className="relative w-full h-[500px] m-4">
+                <Image
+                  src="https://Image.freepik.com/premium-psd/flat-lay-free-food-service-arrangement-with-background-mock-up_23-2148421300.jpg?uid=R147290862&ga=GA1.1.1457401061.1705098422&semt=ais_hybrid"
                   alt="Delicious Food"
-                  className="rounded-lg shadow-2xl transform hover:scale-105 transition-transform duration-300 w-full h-auto max-h-[500px] object-cover"
+                  fill
+                  className="rounded-lg shadow-2xl transform hover:scale-105 transition-transform duration-300 object-cover"
                 />
                 <div className="absolute -bottom-4 -right-4 bg-white p-4 rounded-lg shadow-lg">
                   <div className="text-blue-600 font-bold text-xl">30 min</div>
@@ -121,35 +125,45 @@ const MainPage = () => {
       {/* Features Section */}
       <div className="py-20 bg-gray-50">
         <div className="container mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center mb-12">Why Choose Us</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Why Choose Us
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="text-center">
               <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FaMotorcycle className="text-2xl text-blue-600" />
               </div>
               <h3 className="font-semibold mb-2">Fast Delivery</h3>
-              <p className="text-gray-600">Quick and reliable delivery to your location</p>
+              <p className="text-gray-600">
+                Quick and reliable delivery to your location
+              </p>
             </div>
             <div className="text-center">
               <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FaUtensils className="text-2xl text-blue-600" />
               </div>
               <h3 className="font-semibold mb-2">Quality Food</h3>
-              <p className="text-gray-600">Fresh and high-quality meals from top restaurants</p>
+              <p className="text-gray-600">
+                Fresh and high-quality meals from top restaurants
+              </p>
             </div>
             <div className="text-center">
               <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FaClock className="text-2xl text-blue-600" />
               </div>
               <h3 className="font-semibold mb-2">24/7 Service</h3>
-              <p className="text-gray-600">Order anytime, we are always here for you</p>
+              <p className="text-gray-600">
+                Order anytime, we are always here for you
+              </p>
             </div>
             <div className="text-center">
               <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FaStar className="text-2xl text-blue-600" />
               </div>
               <h3 className="font-semibold mb-2">Best Deals</h3>
-              <p className="text-gray-600">Great offers and discounts on your orders</p>
+              <p className="text-gray-600">
+                Great offers and discounts on your orders
+              </p>
             </div>
           </div>
         </div>
@@ -162,7 +176,8 @@ const MainPage = () => {
             <div className="md:w-1/2 mb-8 md:mb-0">
               <h2 className="text-4xl font-bold mb-6">Download Our App</h2>
               <p className="text-gray-600 mb-8">
-                Get the best food delivery experience with our mobile app. Available for iOS and Android.
+                Get the best food delivery experience with our mobile app.
+                Available for iOS and Android.
               </p>
               <div className="flex space-x-4">
                 <button className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors">
@@ -174,9 +189,9 @@ const MainPage = () => {
               </div>
             </div>
             <div className="md:w-1/2">
-              <Image 
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjXl2kN7vUTLaWd6YWzFaxGsKNS7MkWlYM_g&s" 
-                alt="Mobile App" 
+              <Image
+                src=""
+                alt="Mobile App"
                 className="w-full max-w-md mx-auto"
               />
             </div>
@@ -197,16 +212,36 @@ const MainPage = () => {
             <div>
               <h4 className="font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white">About Us</a></li>
-                <li><a href="#" className="hover:text-white">Contact</a></li>
-                <li><a href="#" className="hover:text-white">FAQ</a></li>
+                <li>
+                  <a href="#" className="hover:text-white">
+                    About Us
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white">
+                    Contact
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white">
+                    FAQ
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Legal</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white">Terms of Service</a></li>
+                <li>
+                  <a href="#" className="hover:text-white">
+                    Privacy Policy
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white">
+                    Terms of Service
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
