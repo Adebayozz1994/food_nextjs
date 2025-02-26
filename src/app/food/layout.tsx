@@ -1,6 +1,6 @@
 "use client";
 
-import { UserProvider } from "@/Components/Usercontext/page";
+import { UserProvider } from "@/components/Usercontext/page";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
