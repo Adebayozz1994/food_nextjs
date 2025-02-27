@@ -248,7 +248,14 @@ export default function AdminProducts() {
         {products.map((product) => (
           <div key={product._id} className="border p-4 rounded shadow">
             {product.imageUrl && (
-              <Image src={product.imageUrl} alt={product.name} className="w-full h-48 object-cover mb-4" />
+              <div className="relative w-full h-48 mb-4">
+              <Image
+                src={product.imageUrl}
+                alt={product.name}
+                fill
+                className="object-cover"
+              />
+            </div>
             )}
             <h2 className="text-xl font-bold">{product.name}</h2>
             <p className="text-gray-700">{product.description}</p>

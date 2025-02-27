@@ -357,7 +357,7 @@ export default function Profile() {
                               key={index}
                               className="flex items-center justify-between py-2 border-t"
                             >
-                              <div className="flex items-center space-x-4">
+                              <div className="relative w-full h-[16px]">
                                 {/* <Image
                                   src={item.product.image}
                                   alt={item.product.name}

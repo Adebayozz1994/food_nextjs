@@ -184,7 +184,7 @@ export default function OrderSuccessContent() {
               <div key={`${item.product._id}-${index}`} 
                 className="flex flex-col md:flex-row md:items-center justify-between border rounded-lg p-4 hover:shadow-md transition-shadow"
               >
-                <div className="flex items-start space-x-4">
+                <div className="flex items-start space-x-4 relative w-full h-[100px]">
                   {item.product.image && (
                     <Image 
                       src={item.product.image} 

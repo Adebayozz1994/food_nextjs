@@ -188,12 +188,13 @@ const MainPage = () => {
                 </button>
               </div>
             </div>
-            <div className="md:w-1/2">
-              <Image
-                src=""
-                alt="Mobile App"
-                className="w-full max-w-md mx-auto"
-              />
+            <div className="relative w-full h-[200px] m-4">
+                <Image
+                  src="https://img.freepik.com/premium-vector/download-page-mobile-app-empty-screen-smartphone-you-app-download-app_100456-10225.jpg?uid=R147290862&ga=GA1.1.1457401061.1705098422&semt=ais_hybrid"
+                  alt="Delicious Food"
+                  fill
+                  className="rounded-lg shadow-2xl transform hover:scale-105 transition-transform duration-300 object-cover"
+                />
             </div>
           </div>
         </div>
