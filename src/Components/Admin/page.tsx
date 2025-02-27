@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useUser } from '@/components/Usercontext/page';
+import { useUser } from '../../components/Usercontext/page';
 import Link from 'next/link';
 
 const Navbar = () => {

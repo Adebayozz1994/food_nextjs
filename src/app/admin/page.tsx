@@ -1,13 +1,13 @@
 // pages/admin/dashboard.js
 'use client';
 import React from 'react';
-import Adminnavbar from '@/components/Admin/Adminnavbar/page';
 import Link from 'next/link';
+import AdminNavbar from '../../components/Admin/Adminnavbar/page';
 
 export default function Dashboard() {
   return (
     <div>
-      <Adminnavbar />
+      <AdminNavbar />
       <div className="container mx-auto p-6">
         <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
         <div className="flex space-x-4">
