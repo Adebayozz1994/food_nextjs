@@ -1,14 +1,18 @@
-// pages/_app.tsx
-import { UserProvider } from '../Usercontext/UserProvider'; 
-import type { AppProps } from 'next/app'; 
+// src/app/layout.tsx
+import React from 'react';
+import { UserProvider } from '../Usercontext/UserProvider';
+import Navbar from './page';
 
 
-function MyApp({ Component, pageProps }: AppProps) { 
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <UserProvider>
-      <Component {...pageProps} />
-    </UserProvider>
+    <html lang="en">
+      <body>
+        <UserProvider>
+          <Navbar />
+          {children}
+        </UserProvider>
+      </body>
+    </html>
   );
 }
-
-export default MyApp;
