@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import { Toaster } from 'react-hot-toast';
+import "./globals.css";
 
 type LayoutProps = {
   children: ReactNode;
