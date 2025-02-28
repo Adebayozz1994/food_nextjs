@@ -2,7 +2,7 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
-import AdminNavbar from '@/components/Admin/Adminnavbar/page';
+import AdminNavbar from '@/app/Adminnavbar/page';
 // import AdminNavbar from '../../components/Admin/Adminnavbar/page';
 
 export default function Dashboard() {

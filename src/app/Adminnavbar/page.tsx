@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useUser } from '../../Usercontext/UserProvider';
+import { useUser } from '../Usercontext/UserProvider';
 import Link from 'next/link';
 
 const AdminNavbar = () => {
