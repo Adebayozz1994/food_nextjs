@@ -1,6 +1,6 @@
 "use client";
 
-import { UserProvider } from "@/components/Usercontext/page";
+import { UserProvider } from "@/components/Usercontext/UserProvider";
 // import { UserProvider } from "../../components/Usercontext/page";
 
 
