@@ -1,4 +1,5 @@
-import Signup from '../../../components/Signup/page'
+// import Signup from '../../../components/Signup/page'
+import Signup from '@/components/Signup/page'
 import React from 'react'
 
 const page = () => {
