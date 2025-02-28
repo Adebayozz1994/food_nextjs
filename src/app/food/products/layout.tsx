@@ -1,6 +1,5 @@
 // import Navbar from "../../../components/Navbar/page";
 import React, { ReactNode } from "react";
-import "./globals.css";
 import Navbar from "@/components/Navbar/page";
 
 type LayoutProps = {

@@ -1,7 +1,9 @@
 "use client";
 
-import { UserProvider } from "../../Usercontext/page";
-import "./globals.css";
+import { UserProvider } from "@/components/Usercontext/page";
+
+// import { UserProvider } from "../../Usercontext/page";
+
 
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
