@@ -92,7 +92,7 @@ export default function CartPage() {
         <>
           {cartItems.map((item) => (
             <div key={item.product._id} className="flex items-center justify-between border-b mb-5">
-              <Image src={item.product.imageUrl} alt={item.product.name} className="w-12 h-12 rounded" />
+              <Image src={item.product.imageUrl} alt={item.product.name} width={20} height={20} className="w-12 h-12 rounded" />
               <p className="font-semibold m-1">{item.product.name}</p>
               <p>${item.product.price.toFixed(2)}</p>
               <input
