@@ -107,10 +107,10 @@ const MainPage = () => {
             <div className="w-full md:w-1/2 pl-0 md:pl-12 mt-8 md:mt-0">
               <div className="relative w-full h-[300px] md:h-[500px] m-4">
                 <Image
-                  src="/images/delivery.PNG" // Ensure this matches the file in public/images (case-sensitive)
+                  src="/images/delivery.PNG" 
                   alt="Delivery Image"
                   fill
-                  sizes="(max-width: 768px) 100vw, 50vw" // Adjusts the rendered size based on viewport width
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="rounded-lg shadow-2xl transform hover:scale-105 transition-transform duration-300 object-cover"
                 />
                 <div className="absolute -bottom-4 -right-4 bg-white p-4 rounded-lg shadow-lg">
