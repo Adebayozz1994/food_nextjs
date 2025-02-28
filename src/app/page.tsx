@@ -107,7 +107,7 @@ const MainPage = () => {
             <div className="w-full md:w-1/2 pl-0 md:pl-12 mt-8 md:mt-0">
               <div className="relative w-full h-[500px] m-4">
                 <Image
-                  src="https://Image.freepik.com/premium-psd/flat-lay-free-food-service-arrangement-with-background-mock-up_23-2148421300.jpg?uid=R147290862&ga=GA1.1.1457401061.1705098422&semt=ais_hybrid"
+                  src="/images/delivery.png"
                   alt="Delicious Food"
                   fill
                   className="rounded-lg shadow-2xl transform hover:scale-105 transition-transform duration-300 object-cover"
