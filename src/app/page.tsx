@@ -105,11 +105,12 @@ const MainPage = () => {
               </button>
             </div>
             <div className="w-full md:w-1/2 pl-0 md:pl-12 mt-8 md:mt-0">
-              <div className="relative w-full h-[500px] m-4">
+              <div className="relative w-full h-[300px] md:h-[500px] m-4">
                 <Image
-                  src="/images/delivery.png"
-                  alt="Delicious Food"
+                  src="/images/delivery.PNG" // Ensure this matches the file in public/images (case-sensitive)
+                  alt="Delivery Image"
                   fill
+                  sizes="(max-width: 768px) 100vw, 50vw" // Adjusts the rendered size based on viewport width
                   className="rounded-lg shadow-2xl transform hover:scale-105 transition-transform duration-300 object-cover"
                 />
                 <div className="absolute -bottom-4 -right-4 bg-white p-4 rounded-lg shadow-lg">
@@ -189,12 +190,12 @@ const MainPage = () => {
               </div>
             </div>
             <div className="relative w-full h-[200px] m-4">
-                <Image
-                  src="https://img.freepik.com/premium-vector/download-page-mobile-app-empty-screen-smartphone-you-app-download-app_100456-10225.jpg?uid=R147290862&ga=GA1.1.1457401061.1705098422&semt=ais_hybrid"
-                  alt="Delicious Food"
-                  fill
-                  className="rounded-lg shadow-2xl transform hover:scale-105 transition-transform duration-300 object-cover"
-                />
+              <Image
+                src="https://img.freepik.com/premium-vector/download-page-mobile-app-empty-screen-smartphone-you-app-download-app_100456-10225.jpg?uid=R147290862&ga=GA1.1.1457401061.1705098422&semt=ais_hybrid"
+                alt="Delicious Food"
+                fill
+                className="rounded-lg shadow-2xl transform hover:scale-105 transition-transform duration-300 object-cover"
+              />
             </div>
           </div>
         </div>
