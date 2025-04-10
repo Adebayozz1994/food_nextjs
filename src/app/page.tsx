@@ -113,6 +113,7 @@ const MainPage = () => {
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="rounded-lg shadow-2xl transform hover:scale-105 transition-transform duration-300 object-cover"
                 />
+               
                 <div className="absolute -bottom-4 -right-4 bg-white p-4 rounded-lg shadow-lg">
                   <div className="text-blue-600 font-bold text-xl">30 min</div>
                   <div className="text-gray-600 text-sm">Fast Delivery</div>
